@@ -10,7 +10,7 @@
         :height="height"
         :startX="startX"
         :startY="startY"
-        :shadow="shadow"
+        :rect="rect"
         :cornerActive="cornerActive"
       />
     </div>
@@ -28,7 +28,7 @@ const width = ref(500)
 const height = ref(500)
 const startX = ref(0)
 const startY = ref(0)
-const shadow = reactive({
+const rect = reactive({
   x: 200,
   y: 100,
   width: 200,
