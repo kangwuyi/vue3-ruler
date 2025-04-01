@@ -40,14 +40,23 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, defineEmits, inject, ref, watch, onMounted } from 'vue'
+import {
+  computed,
+  defineProps,
+  defineEmits,
+  inject,
+  ref,
+  watch,
+  onMounted,
+  type PropType,
+} from 'vue'
 import LineRuler from './line.vue'
 import CanvasRuler from './canvas.vue'
-import { DEFAULT_THEME, lineListKey, DEFAULT_LINELIST } from '../config/index.ts'
+import { DEFAULT_THEME, lineListKey, DEFAULT_LINELIST, type IFShadow } from '../config/index.ts'
 
 const emit = defineEmits(['update:lineVisible', 'onLineChange', 'onLineRemove'])
 const props = defineProps({
-  shadow: { type: Object, required: true },
+  shadow: { type: Object as PropType<IFShadow>, required: true },
   vertical: { type: Boolean, required: true },
   scale: { type: Number, required: true },
   ratio: { type: Number, required: true },

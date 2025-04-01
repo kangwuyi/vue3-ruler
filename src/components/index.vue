@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, provide, reactive, ref } from 'vue'
+import { computed, defineProps, provide, reactive, ref, type PropType } from 'vue'
 import RulerWrapper from './Ruler/wrapper.vue'
 import { DEFAULT_THEME, type IFLineList, lineListKey, type IFShadow } from './config/index.ts'
 
@@ -62,7 +62,7 @@ const props = defineProps({
   },
   // 传入阴影部分，选中画布组件，在标尺中标注组件位置
   shadow: {
-    type: Object,
+    type: Object as PropType<IFShadow>,
     default: () =>
       ({
         x: 0,

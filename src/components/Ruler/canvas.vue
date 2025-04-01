@@ -9,9 +9,14 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, watch, onMounted, defineEmits, inject } from 'vue'
-import { drawHorizontalRuler, drawVerticalRuler } from './utils.ts'
-import { lineListKey, DEFAULT_LINELIST, type IFDrawRulerOption } from '../config/index.ts'
+import { defineProps, ref, watch, onMounted, defineEmits, inject, type PropType } from 'vue'
+import { drawCanvaslRuler } from './utils.ts'
+import {
+  lineListKey,
+  DEFAULT_LINELIST,
+  type IFDrawRulerOption,
+  type IFShadow,
+} from '../config/index.ts'
 
 const { updateLineList } = inject(lineListKey, DEFAULT_LINELIST)
 
@@ -24,7 +29,7 @@ const canvasRef = ref<HTMLCanvasElement>()
 const canvasContext = ref<CanvasRenderingContext2D>()
 
 const props = defineProps({
-  shadow: { type: Object, required: true },
+  shadow: { type: Object as PropType<IFShadow>, required: true },
   vertical: { type: Boolean, required: true },
   start: { type: Number, required: true },
   scale: { type: Number, required: true },
@@ -72,21 +77,18 @@ const drawRuler = () => {
     height: props.height,
   }
 
-  if (props.vertical) {
-    drawVerticalRuler(
-      canvasContext.value!,
-      props.start,
-      { y: props.shadow.y, height: props.shadow.height, x: 0, width: 0 },
-      options,
-    )
-  } else {
-    drawHorizontalRuler(
-      canvasContext.value!,
-      props.start,
-      { x: props.shadow.x, width: props.shadow.width, y: 0, height: 0 },
-      options,
-    )
-  }
+  drawCanvaslRuler(
+    props.vertical,
+    canvasContext.value!,
+    props.start,
+    {
+      x: props.vertical ? 0 : props.shadow.x,
+      width: props.vertical ? 0 : props.shadow.width,
+      y: props.vertical ? props.shadow.y : 0,
+      height: props.vertical ? props.shadow.height : 0,
+    },
+    options,
+  )
 }
 const handleClick = (e: MouseEvent) => {
   const offset = props.vertical ? e.offsetY : e.offsetX
