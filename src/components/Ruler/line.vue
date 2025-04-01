@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, defineEmits, ref, onMounted, inject } from 'vue'
+import { computed, defineProps, defineEmits, ref, onMounted, inject, type CSSProperties } from 'vue'
 import {
   DEFAULT_THEME,
   lineListKey,
@@ -48,13 +48,13 @@ const props = defineProps({
   thick: { type: Number, required: true },
 })
 
-const offset = computed(() => {
+const offset = computed<CSSProperties>(() => {
   const offset = (startValue.value - props.start) * scaleFigure.value
   const positionValue = `${offset}px`
   return props.isVertical ? { top: positionValue } : { left: positionValue }
 })
 
-const borderCursor = computed(() => {
+const borderCursor = computed<CSSProperties>(() => {
   const borderValue = `1px solid ${DEFAULT_THEME.lineColor}`
   const border = props.isVertical ? { borderTop: borderValue } : { borderLeft: borderValue }
   return {
@@ -63,7 +63,7 @@ const borderCursor = computed(() => {
     ...border,
   }
 })
-const sizeStyle = computed(() =>
+const sizeStyle = computed<CSSProperties>(() =>
   props.isVertical
     ? {
         width: `${props.rollback + props.thick}px`,

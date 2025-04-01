@@ -4,8 +4,8 @@
     :rect="rect"
     :isVertical="false"
     :width="width"
-    :height="thick"
-    :thick="thick"
+    :height="thickNext"
+    :thick="thickNext"
     :rollback="height"
     :start="startX"
     v-model:lineVisible="lineVisible"
@@ -14,9 +14,9 @@
   <RulerWrapper
     :rect="rect"
     :isVertical="true"
-    :width="thick"
+    :width="thickNext"
     :height="height"
-    :thick="thick"
+    :thick="thickNext"
     :rollback="width"
     :start="startY"
     v-model:lineVisible="lineVisible"
@@ -33,7 +33,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, provide, reactive, ref, type PropType, watch } from 'vue'
+import {
+  computed,
+  defineProps,
+  defineEmits,
+  provide,
+  reactive,
+  ref,
+  type PropType,
+  type CSSProperties,
+  watch,
+  onMounted,
+} from 'vue'
 import RulerWrapper from './Ruler/wrapper.vue'
 import {
   DEFAULT_THEME,
@@ -44,6 +55,12 @@ import {
   scaleFigureKey,
 } from './config/index.ts'
 import type { IFLineList, IFRect } from './config/index.ts'
+
+const emit = defineEmits([
+  // 选中组件的坐标值发生改变, rect.rect|rect.y
+  // 可能的情况，选中组件移动过程中发生吸附其他组件或中轴线或边界线
+  'update:rect',
+])
 
 const props = defineProps({
   // Window.devicePixelRatio = {物理像素分辨率/CSS 像素分辨率}
@@ -87,19 +104,22 @@ const props = defineProps({
   },
 })
 // --- wdpRatio ---
-const wdpRatioRef = ref(DEFAULT_WDP_RATIO)
+const wdpRatioRef = ref(props.wdpRatio || DEFAULT_WDP_RATIO)
 provide(wdpRatioKey, wdpRatioRef)
 watch(
   () => props.wdpRatio,
   (_) => (wdpRatioRef.value = _),
 )
 // --- scale ---
-const scaleFigureRef = ref(DEFAULT_SCALE_FIGURE)
+const scaleFigureRef = ref(props.scaleFigure || DEFAULT_SCALE_FIGURE)
 provide(scaleFigureKey, scaleFigureRef)
 watch(
   () => props.scaleFigure,
   (_) => (scaleFigureRef.value = _),
 )
+// ------ thick ------------------------
+const thickNext = computed(() => props.thick * wdpRatioRef.value * scaleFigureRef.value)
+
 // ---- 标注线 ----------
 const lineList = reactive<IFLineList>({
   // 横向
@@ -121,7 +141,7 @@ provide(lineListKey, {
   updateLineList,
 })
 // --------------
-const cornerStyle = computed(() => ({
+const cornerStyle = computed<CSSProperties>(() => ({
   backgroundColor: DEFAULT_THEME.bgColor,
   width: `${props.thick}px`,
   height: `${props.thick}px`,

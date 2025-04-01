@@ -50,6 +50,7 @@ import {
   onMounted,
   type PropType,
   type Reactive,
+  type CSSProperties,
 } from 'vue'
 import LineRuler from './line.vue'
 import CanvasRuler from './canvas.vue'
@@ -90,7 +91,7 @@ watch(lineList, (_) => refreshCurLineList(_))
 // -------
 const isDraggingLine = ref(false)
 // --------
-const rwStyle = computed(() => {
+const rwStyle = computed<CSSProperties>(() => {
   const hContainer = {
     width: `calc(100% - ${props.thick}px)`,
     height: `${props.thick}px`,
@@ -105,7 +106,7 @@ const rwStyle = computed(() => {
 })
 
 const tmpValue = ref<number>(0)
-const indicatorStyle = computed(() => {
+const indicatorStyle = computed<CSSProperties>(() => {
   const indicatorOffset = (tmpValue.value - props.start) * scaleFigure.value
   const positionKey = props.isVertical ? 'top' : 'left'
   const boderKey = props.isVertical ? 'borderTop' : 'borderLeft'

@@ -31,19 +31,19 @@ export const drawCanvaslRuler = (
   ctx.fillRect(0, 0, width, height)
 
   // 2. 画阴影
-  // if (rect) {
-  //   // 阴影起点坐标
-  //   const pos = ((vertical ? rect.y : rect.x) - start) * scale
-  //   // 阴影高度
-  //   const shadowSize = (vertical ? rect.height : rect.width) * scale
-  //   ctx.fillStyle = shadowColor
+  if (rect) {
+    // 阴影起点坐标
+    const pos = ((vertical ? rect.y : rect.x) - start) * scale
+    // 阴影高度
+    const shadowSize = (vertical ? rect.height : rect.width) * scale
+    ctx.fillStyle = shadowColor
 
-  //   const param1 = vertical ? 0 : pos
-  //   const param2 = vertical ? pos : 0
-  //   const param3 = vertical ? width : shadowSize
-  //   const param4 = vertical ? shadowSize : height
-  //   ctx.fillRect(param1, param2, param3, param4)
-  // }
+    const param1 = vertical ? 0 : pos
+    const param2 = vertical ? pos : 0
+    const param3 = vertical ? width : shadowSize
+    const param4 = vertical ? shadowSize : height
+    ctx.fillRect(param1, param2, param3, param4)
+  }
 
   const gridSize = getGridSize(scale) // 每小格表示的宽度
   const gridPixel = gridSize * scale
