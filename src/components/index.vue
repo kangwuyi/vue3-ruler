@@ -5,6 +5,8 @@
     :vertical="false"
     :width="width"
     :height="thick"
+    :thick="thick"
+    :rollback="height"
     :start="startX"
     :scale="scale"
     :ratio="ratio"
@@ -16,6 +18,8 @@
     :vertical="true"
     :width="thick"
     :height="height"
+    :thick="thick"
+    :rollback="width"
     :start="startY"
     :scale="scale"
     :ratio="ratio"
@@ -121,7 +125,7 @@ const handleLineVisibleChange = () => (lineVisible.value = !lineVisible.value)
   transition: all 0.2s ease-in-out;
   box-sizing: content-box;
   &-active {
-    background-color: aqua !important;
+    background-color: white !important;
   }
 }
 </style>

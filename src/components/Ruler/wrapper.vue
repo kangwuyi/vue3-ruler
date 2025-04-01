@@ -8,6 +8,7 @@
     :style="rwStyle"
   >
     <CanvasRuler
+      :lineVisible="lineVisible"
       :shadow="shadow"
       :vertical="vertical"
       :scale="scale"
@@ -19,13 +20,14 @@
       @onIndicatorShow="handleIndicatorShow"
       @onIndicatorHide="handleIndicatorHide"
     />
-    <div class="ruler-_-line-box">
+    <div v-if="lineVisible" class="ruler-_-line-box">
       <LineRuler
         v-for="(v, i) in curLineList"
         :key="'line' + v"
         :index="i"
         :start="start"
         :vertical="vertical"
+        :rollback="rollback"
         :scale="scale"
         :thick="thick"
         :value="v >> 0"
@@ -49,10 +51,17 @@ import {
   watch,
   onMounted,
   type PropType,
+  type Reactive,
 } from 'vue'
 import LineRuler from './line.vue'
 import CanvasRuler from './canvas.vue'
-import { DEFAULT_THEME, lineListKey, DEFAULT_LINELIST, type IFShadow } from '../config/index.ts'
+import {
+  DEFAULT_THEME,
+  type IFLineList,
+  lineListKey,
+  DEFAULT_LINELIST,
+  type IFShadow,
+} from '../config/index.ts'
 
 const emit = defineEmits(['update:lineVisible', 'onLineChange', 'onLineRemove'])
 const props = defineProps({
@@ -61,36 +70,35 @@ const props = defineProps({
   scale: { type: Number, required: true },
   ratio: { type: Number, required: true },
   width: { type: Number, required: true },
+  thick: { type: Number, required: true },
+  // 缓存被 thick 替换的宽高
+  rollback: { type: Number, required: true, defalut: 0 },
   height: { type: Number, required: true },
   start: { type: Number, required: true },
   lineVisible: { type: Boolean, required: true },
 })
 // --------------
-// 标尺高度
-const thick = ref(0)
 // 线的数组
 const { lineList } = inject(lineListKey, DEFAULT_LINELIST)
 const curLineList = ref<number[]>([])
 // 初始化
-onMounted(() => {
-  curLineList.value = props.vertical ? lineList.vertical : lineList.horizontal
-  thick.value = props.vertical ? props.width : props.height
-})
-
-watch(lineList, (_) => (curLineList.value = props.vertical ? _.vertical : _.horizontal))
+const refreshCurLineList = (_: Reactive<IFLineList>) =>
+  (curLineList.value = props.vertical ? _.vertical : _.horizontal)
+onMounted(() => refreshCurLineList(lineList))
+watch(lineList, (_) => refreshCurLineList(_))
 // -------
 const isDraggingLine = ref(false)
 // --------
 const rwStyle = computed(() => {
   const hContainer = {
-    width: `calc(100% - ${thick.value}px)`,
-    height: `${thick.value}px`,
-    left: `${thick.value}px`,
+    width: `calc(100% - ${props.thick}px)`,
+    height: `${props.thick}px`,
+    left: `${props.thick}px`,
   }
   const vContainer = {
-    width: `${thick.value}px`,
-    height: `calc(100% - ${thick.value}px)`,
-    top: `${thick.value}px`,
+    width: `${props.thick}px`,
+    height: `calc(100% - ${props.thick}px)`,
+    top: `${props.thick}px`,
   }
   return props.vertical ? vContainer : hContainer
 })
@@ -99,12 +107,12 @@ const tmpValue = ref<number>(0)
 const indicatorStyle = computed(() => {
   const indicatorOffset = (tmpValue.value - props.start) * props.scale
   const positionKey = props.vertical ? 'top' : 'left'
-  const boderKey = props.vertical ? 'borderBottom' : 'borderLeft'
+  const boderKey = props.vertical ? 'borderTop' : 'borderLeft'
   const sizeKey = props.vertical ? 'width' : 'height'
   return {
     [positionKey]: `${indicatorOffset}px`,
     [boderKey]: `1px dashed ${DEFAULT_THEME.cornerActiveColor}`,
-    [sizeKey]: `${props.vertical ? props.height : props.width}px`,
+    [sizeKey]: `${props.rollback}px`,
   }
 })
 

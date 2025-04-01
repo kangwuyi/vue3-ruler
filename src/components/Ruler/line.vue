@@ -5,7 +5,7 @@
       'ruler-_-line-v': vertical,
       'ruler-_-line-h': !vertical,
     }"
-    :style="[offset, borderCursor]"
+    :style="[offset, borderCursor, sizeStyle]"
     @dblclick.stop.prevent="handleDelLine"
     @mousedown.stop.prevent="handleDown"
     :tabindex="index"
@@ -34,6 +34,7 @@ const props = defineProps({
   start: { type: Number, required: true },
   vertical: { type: Boolean, required: true },
   scale: { type: Number, required: true },
+  rollback: { type: Number, required: true },
   value: { type: Number, required: true },
   thick: { type: Number, required: true },
 })
@@ -53,9 +54,23 @@ const borderCursor = computed(() => {
     ...border,
   }
 })
-
+const sizeStyle = computed(() =>
+  props.vertical
+    ? {
+        width: `${props.rollback + props.thick}px`,
+      }
+    : {
+        height: `${props.rollback + props.thick}px`,
+      },
+)
 const actionStyle = computed(() =>
-  props.vertical ? { left: `${props.thick - 21}px` } : { top: `${props.thick - 15}px` },
+  props.vertical
+    ? {
+        left: `${props.thick - 21}px`,
+      }
+    : {
+        top: `${props.thick - 15}px`,
+      },
 )
 
 const handleDown = (e: MouseEvent) => {
@@ -91,7 +106,7 @@ const handleDelLine = () =>
 .ruler-_-line {
   position: absolute;
   &-v {
-    width: 100vw;
+    width: 100%;
     left: 0;
     padding-top: 5px;
 
@@ -100,7 +115,7 @@ const handleDelLine = () =>
     }
   }
   &-h {
-    height: 100vh;
+    height: 100%;
     top: 0;
     padding-left: 2px;
   }

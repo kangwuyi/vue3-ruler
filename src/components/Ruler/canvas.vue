@@ -1,6 +1,9 @@
 <template>
   <canvas
-    class="ruler-_-canvas"
+    :class="{
+      'ruler-_-canvas': true,
+      'ruler-_-canvas-noevent': !lineVisible,
+    }"
     ref="canvasRef"
     @click="handleClick"
     @mouseenter="handleEnter"
@@ -31,6 +34,7 @@ const canvasContext = ref<CanvasRenderingContext2D>()
 const props = defineProps({
   shadow: { type: Object as PropType<IFShadow>, required: true },
   vertical: { type: Boolean, required: true },
+  lineVisible: { type: Boolean, required: true },
   start: { type: Number, required: true },
   scale: { type: Number, required: true },
   ratio: { type: Number, required: true },
@@ -119,5 +123,8 @@ onMounted(() => {
   // width: 100%;
   // height: 100%;
   pointer-events: auto;
+  &-noevent {
+    pointer-events: none;
+  }
 }
 </style>

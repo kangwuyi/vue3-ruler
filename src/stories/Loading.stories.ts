@@ -13,6 +13,7 @@ const meta = {
   },
   args: {
     scale: 1,
+    ratio: 1,
     thick: 24,
     width: 500,
     height: 400,
