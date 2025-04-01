@@ -1,4 +1,4 @@
-import { DEFAULT_THEME, type IFDrawRulerOption, type IFShadow } from '../config/index.ts'
+import { DEFAULT_THEME, type IFDrawRulerOption, type IFRect } from '../config/index.ts'
 
 // 标尺中每小格代表的宽度(根据scale的不同实时变化)
 const getGridSize = (scale: number) => {
@@ -16,7 +16,7 @@ export const drawCanvaslRuler = (
   vertical: boolean,
   ctx: CanvasRenderingContext2D,
   start: number,
-  shadow: IFShadow,
+  rect: IFRect,
   options: IFDrawRulerOption,
 ) => {
   const { scale, width, height, ratio } = options
@@ -31,11 +31,11 @@ export const drawCanvaslRuler = (
   ctx.fillRect(0, 0, width, height)
 
   // 2. 画阴影
-  // if (shadow) {
+  // if (rect) {
   //   // 阴影起点坐标
-  //   const pos = ((vertical ? shadow.y : shadow.x) - start) * scale
+  //   const pos = ((vertical ? rect.y : rect.x) - start) * scale
   //   // 阴影高度
-  //   const shadowSize = (vertical ? shadow.height : shadow.width) * scale
+  //   const shadowSize = (vertical ? rect.height : rect.width) * scale
   //   ctx.fillStyle = shadowColor
 
   //   const param1 = vertical ? 0 : pos

@@ -18,7 +18,7 @@ import {
   lineListKey,
   DEFAULT_LINELIST,
   type IFDrawRulerOption,
-  type IFShadow,
+  type IFRect,
 } from '../config/index.ts'
 
 const { updateLineList } = inject(lineListKey, DEFAULT_LINELIST)
@@ -32,7 +32,7 @@ const canvasRef = ref<HTMLCanvasElement>()
 const canvasContext = ref<CanvasRenderingContext2D>()
 
 const props = defineProps({
-  shadow: { type: Object as PropType<IFShadow>, required: true },
+  rect: { type: Object as PropType<IFRect>, required: true },
   vertical: { type: Boolean, required: true },
   lineVisible: { type: Boolean, required: true },
   start: { type: Number, required: true },
@@ -42,11 +42,11 @@ const props = defineProps({
   height: { type: Number, required: true },
 })
 watch(
-  () => props.shadow,
+  () => props.rect,
   (_) => console.log(_),
 )
 watch(
-  () => [props.start, props.shadow],
+  () => [props.start, props.rect],
   () => drawRuler(),
 )
 watch(
@@ -86,10 +86,10 @@ const drawRuler = () => {
     canvasContext.value!,
     props.start,
     {
-      x: props.vertical ? 0 : props.shadow.x,
-      width: props.vertical ? 0 : props.shadow.width,
-      y: props.vertical ? props.shadow.y : 0,
-      height: props.vertical ? props.shadow.height : 0,
+      x: props.vertical ? 0 : props.rect.x,
+      width: props.vertical ? 0 : props.rect.width,
+      y: props.vertical ? props.rect.y : 0,
+      height: props.vertical ? props.rect.height : 0,
     },
     options,
   )

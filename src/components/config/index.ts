@@ -52,7 +52,7 @@ export interface IFDrawRulerOption {
 }
 
 // --------- shadow -----------
-export interface IFShadow {
+export interface IFRect {
   x: number
   y: number
   width: number

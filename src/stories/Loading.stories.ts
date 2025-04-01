@@ -19,7 +19,7 @@ const meta = {
     height: 400,
     startX: 0,
     startY: 0,
-    shadow: {
+    rect: {
       x: 200,
       y: 100,
       width: 200,

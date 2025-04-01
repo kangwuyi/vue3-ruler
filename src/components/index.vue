@@ -1,7 +1,7 @@
 <template>
   <!-- 水平方向 -->
   <RulerWrapper
-    :shadow="shadow"
+    :rect="rect"
     :vertical="false"
     :width="width"
     :height="thick"
@@ -14,7 +14,7 @@
   />
   <!-- 竖直方向 -->
   <RulerWrapper
-    :shadow="shadow"
+    :rect="rect"
     :vertical="true"
     :width="thick"
     :height="height"
@@ -39,7 +39,7 @@
 <script lang="ts" setup>
 import { computed, defineProps, provide, reactive, ref, type PropType } from 'vue'
 import RulerWrapper from './Ruler/wrapper.vue'
-import { DEFAULT_THEME, type IFLineList, lineListKey, type IFShadow } from './config/index.ts'
+import { DEFAULT_THEME, type IFLineList, lineListKey, type IFRect } from './config/index.ts'
 
 const props = defineProps({
   scale: {
@@ -65,15 +65,15 @@ const props = defineProps({
     default: 0,
   },
   // 传入阴影部分，选中画布组件，在标尺中标注组件位置
-  shadow: {
-    type: Object as PropType<IFShadow>,
+  rect: {
+    type: Object as PropType<IFRect>,
     default: () =>
       ({
         x: 0,
         y: 0,
         width: 0,
         height: 0,
-      }) as IFShadow,
+      }) as IFRect,
   },
   cornerActive: {
     type: Boolean,

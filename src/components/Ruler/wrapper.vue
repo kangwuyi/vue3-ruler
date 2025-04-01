@@ -5,11 +5,12 @@
       'ruler-_-wrapper-v': vertical,
       'ruler-_-wrapper-h': !vertical,
     }"
+    @touchmove.prevent
     :style="rwStyle"
   >
     <CanvasRuler
       :lineVisible="lineVisible"
-      :shadow="shadow"
+      :rect="rect"
       :vertical="vertical"
       :scale="scale"
       :ratio="ratio"
@@ -60,12 +61,12 @@ import {
   type IFLineList,
   lineListKey,
   DEFAULT_LINELIST,
-  type IFShadow,
+  type IFRect,
 } from '../config/index.ts'
 
 const emit = defineEmits(['update:lineVisible', 'onLineChange', 'onLineRemove'])
 const props = defineProps({
-  shadow: { type: Object as PropType<IFShadow>, required: true },
+  rect: { type: Object as PropType<IFRect>, required: true },
   vertical: { type: Boolean, required: true },
   scale: { type: Number, required: true },
   ratio: { type: Number, required: true },
@@ -112,7 +113,7 @@ const indicatorStyle = computed(() => {
   return {
     [positionKey]: `${indicatorOffset}px`,
     [boderKey]: `1px dashed ${DEFAULT_THEME.cornerActiveColor}`,
-    [sizeKey]: `${props.rollback}px`,
+    [sizeKey]: `${props.rollback + props.thick}px`,
   }
 })
 
