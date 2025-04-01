@@ -70,10 +70,10 @@ const props = defineProps({
   rect: { type: Object as PropType<IFRect>, required: true },
   isVertical: { type: Boolean, required: true },
   width: { type: Number, required: true },
+  height: { type: Number, required: true },
   thick: { type: Number, required: true },
   // 缓存被 thick 替换的宽高
   rollback: { type: Number, required: true, defalut: 0 },
-  height: { type: Number, required: true },
   start: { type: Number, required: true },
   lineVisible: { type: Boolean, required: true },
 })
@@ -129,10 +129,7 @@ const handleIndicatorMove = (value: number) => {
   tmpValue.value = value
 }
 // 栅格线隐藏
-const handleIndicatorHide = () => {
-  console.log('handleIndicatorHide')
-  emit('update:lineVisible', false)
-}
+const handleIndicatorHide = () => emit('update:lineVisible', false)
 
 const handleLineDown = () => {
   isDraggingLine.value = true

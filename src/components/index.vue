@@ -101,7 +101,6 @@ watch(
   (_) => (scaleFigureRef.value = _),
 )
 // ---- 标注线 ----------
-
 const lineList = reactive<IFLineList>({
   // 横向
   horizontal: [],
