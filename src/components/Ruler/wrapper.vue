@@ -2,8 +2,8 @@
   <div
     :class="{
       'ruler-_-wrapper': true,
-      'ruler-_-wrapper-v': vertical,
-      'ruler-_-wrapper-h': !vertical,
+      'ruler-_-wrapper-v': isVertical,
+      'ruler-_-wrapper-h': !isVertical,
     }"
     @touchmove.prevent
     :style="rwStyle"
@@ -11,7 +11,7 @@
     <CanvasRuler
       :lineVisible="lineVisible"
       :rect="rect"
-      :vertical="vertical"
+      :isVertical="isVertical"
       :width="width"
       :height="height"
       :start="start"
@@ -25,7 +25,7 @@
         :key="'line' + v"
         :index="i"
         :start="start"
-        :vertical="vertical"
+        :isVertical="isVertical"
         :rollback="rollback"
         :thick="thick"
         :value="v >> 0"
@@ -68,7 +68,7 @@ const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
 const emit = defineEmits(['update:lineVisible', 'onLineChange', 'onLineRemove'])
 const props = defineProps({
   rect: { type: Object as PropType<IFRect>, required: true },
-  vertical: { type: Boolean, required: true },
+  isVertical: { type: Boolean, required: true },
   width: { type: Number, required: true },
   thick: { type: Number, required: true },
   // 缓存被 thick 替换的宽高
@@ -84,7 +84,7 @@ const { lineList } = inject(lineListKey, DEFAULT_LINELIST)
 const curLineList = ref<number[]>([])
 // 初始化
 const refreshCurLineList = (_: Reactive<IFLineList>) =>
-  (curLineList.value = props.vertical ? _.vertical : _.horizontal)
+  (curLineList.value = props.isVertical ? _.vertical : _.horizontal)
 onMounted(() => refreshCurLineList(lineList))
 watch(lineList, (_) => refreshCurLineList(_))
 // -------
@@ -101,15 +101,15 @@ const rwStyle = computed(() => {
     height: `calc(100% - ${props.thick}px)`,
     top: `${props.thick}px`,
   }
-  return props.vertical ? vContainer : hContainer
+  return props.isVertical ? vContainer : hContainer
 })
 
 const tmpValue = ref<number>(0)
 const indicatorStyle = computed(() => {
   const indicatorOffset = (tmpValue.value - props.start) * scaleFigure.value
-  const positionKey = props.vertical ? 'top' : 'left'
-  const boderKey = props.vertical ? 'borderTop' : 'borderLeft'
-  const sizeKey = props.vertical ? 'width' : 'height'
+  const positionKey = props.isVertical ? 'top' : 'left'
+  const boderKey = props.isVertical ? 'borderTop' : 'borderLeft'
+  const sizeKey = props.isVertical ? 'width' : 'height'
   return {
     [positionKey]: `${indicatorOffset}px`,
     [boderKey]: `1px dashed ${DEFAULT_THEME.cornerActiveColor}`,
@@ -142,12 +142,12 @@ const handleLineRelease = (value: number, index: number) => {
   isDraggingLine.value = false
   // 左右或上下超出时, 删除该条对齐线
   const offset = value - props.start
-  const maxOffset = (props.vertical ? props.height : props.width) / scaleFigure.value
+  const maxOffset = (props.isVertical ? props.height : props.width) / scaleFigure.value
   if (offset < 0 || offset > maxOffset) {
     emit('onLineRemove', index)
   } else {
     curLineList.value[index] = value
-    emit('onLineChange', curLineList.value, props.vertical)
+    emit('onLineChange', curLineList.value, props.isVertical)
   }
 }
 </script>

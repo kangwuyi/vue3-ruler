@@ -2,7 +2,7 @@
   <!-- 水平方向 -->
   <RulerWrapper
     :rect="rect"
-    :vertical="false"
+    :isVertical="false"
     :width="width"
     :height="thick"
     :thick="thick"
@@ -13,7 +13,7 @@
   <!-- 竖直方向 -->
   <RulerWrapper
     :rect="rect"
-    :vertical="true"
+    :isVertical="true"
     :width="thick"
     :height="height"
     :thick="thick"

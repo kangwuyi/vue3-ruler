@@ -2,8 +2,8 @@
   <div
     :class="{
       'ruler-_-line': true,
-      'ruler-_-line-v': vertical,
-      'ruler-_-line-h': !vertical,
+      'ruler-_-line-v': isVertical,
+      'ruler-_-line-h': !isVertical,
     }"
     :style="[offset, borderCursor, sizeStyle]"
     @dblclick.stop.prevent="handleDelLine"
@@ -42,7 +42,7 @@ const emit = defineEmits(['onMouseDown', 'onRelease'])
 const props = defineProps({
   index: { type: Number, required: true },
   start: { type: Number, required: true },
-  vertical: { type: Boolean, required: true },
+  isVertical: { type: Boolean, required: true },
   rollback: { type: Number, required: true },
   value: { type: Number, required: true },
   thick: { type: Number, required: true },
@@ -51,20 +51,20 @@ const props = defineProps({
 const offset = computed(() => {
   const offset = (startValue.value - props.start) * scaleFigure.value
   const positionValue = `${offset}px`
-  return props.vertical ? { top: positionValue } : { left: positionValue }
+  return props.isVertical ? { top: positionValue } : { left: positionValue }
 })
 
 const borderCursor = computed(() => {
   const borderValue = `1px solid ${DEFAULT_THEME.lineColor}`
-  const border = props.vertical ? { borderTop: borderValue } : { borderLeft: borderValue }
+  const border = props.isVertical ? { borderTop: borderValue } : { borderLeft: borderValue }
   return {
     // ns↕️ ew↔️
-    cursor: props.vertical ? 'ns-resize' : 'ew-resize',
+    cursor: props.isVertical ? 'ns-resize' : 'ew-resize',
     ...border,
   }
 })
 const sizeStyle = computed(() =>
-  props.vertical
+  props.isVertical
     ? {
         width: `${props.rollback + props.thick}px`,
       }
@@ -73,7 +73,7 @@ const sizeStyle = computed(() =>
       },
 )
 const actionStyle = computed(() =>
-  props.vertical
+  props.isVertical
     ? {
         left: `${props.thick - 21}px`,
       }
@@ -83,13 +83,13 @@ const actionStyle = computed(() =>
 )
 
 const handleDown = (e: MouseEvent) => {
-  const startD = props.vertical ? e.clientY : e.clientX
+  const startD = props.isVertical ? e.clientY : e.clientX
   const initValue = startValue.value
   emit('onMouseDown')
   // 锁定框选工具
   // props.$bus.$emit('selectFrameLock', true);
   const onMove = (e: MouseEvent) => {
-    const currentD = props.vertical ? e.clientY : e.clientX
+    const currentD = props.isVertical ? e.clientY : e.clientX
     const newValue = Math.round(initValue + (currentD - startD) / scaleFigure.value)
     startValue.value = newValue
   }
@@ -108,7 +108,7 @@ const handleDown = (e: MouseEvent) => {
 // ----------
 // 双击删除此线
 const handleDelLine = () =>
-  updateLineList(props.vertical ? 'vertical' : 'horizontal', 'del', props.index)
+  updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'del', props.index)
 </script>
 
 <style lang="less">

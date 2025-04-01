@@ -43,7 +43,7 @@ const canvasContext = ref<CanvasRenderingContext2D>()
 
 const props = defineProps({
   rect: { type: Object as PropType<IFRect>, required: true },
-  vertical: { type: Boolean, required: true },
+  isVertical: { type: Boolean, required: true },
   lineVisible: { type: Boolean, required: true },
   start: { type: Number, required: true },
   width: { type: Number, required: true },
@@ -90,31 +90,31 @@ const drawRuler = () => {
   }
 
   drawCanvaslRuler(
-    props.vertical,
+    props.isVertical,
     canvasContext.value!,
     props.start,
     {
-      x: props.vertical ? 0 : props.rect.x,
-      width: props.vertical ? 0 : props.rect.width,
-      y: props.vertical ? props.rect.y : 0,
-      height: props.vertical ? props.rect.height : 0,
+      x: props.isVertical ? 0 : props.rect.x,
+      width: props.isVertical ? 0 : props.rect.width,
+      y: props.isVertical ? props.rect.y : 0,
+      height: props.isVertical ? props.rect.height : 0,
     },
     options,
   )
 }
 const handleClick = (e: MouseEvent) => {
-  const offset = props.vertical ? e.offsetY : e.offsetX
+  const offset = props.isVertical ? e.offsetY : e.offsetX
   const value = getValueByOffset(offset, props.start, scaleFigure.value) // 获取标尺数值
-  updateLineList(props.vertical ? 'vertical' : 'horizontal', 'add', value)
+  updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'add', value)
 }
 const handleEnter = (e: MouseEvent) => {
-  const offset = props.vertical ? e.offsetY : e.offsetX
+  const offset = props.isVertical ? e.offsetY : e.offsetX
   const value = getValueByOffset(offset, props.start, scaleFigure.value)
   emit('onIndicatorShow', value)
 }
 
 const handleMove = (e: MouseEvent) => {
-  const offset = props.vertical ? e.offsetY : e.offsetX
+  const offset = props.isVertical ? e.offsetY : e.offsetX
   const value = getValueByOffset(offset, props.start, scaleFigure.value)
   emit('onIndicatorMove', value)
 }
