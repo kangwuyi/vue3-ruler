@@ -18,7 +18,17 @@
 
 <script lang="ts" setup>
 import { computed, defineProps, defineEmits, ref, onMounted, inject } from 'vue'
-import { DEFAULT_THEME, lineListKey, DEFAULT_LINELIST } from '../config/index.ts'
+import {
+  DEFAULT_THEME,
+  lineListKey,
+  DEFAULT_LINELIST,
+  scaleFigureKey,
+  DEFAULT_SCALE_FIGURE,
+} from '../config/index.ts'
+
+// ----- scaleFigure --------
+const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
+// ---------------
 
 const { updateLineList } = inject(lineListKey, DEFAULT_LINELIST)
 
@@ -33,14 +43,13 @@ const props = defineProps({
   index: { type: Number, required: true },
   start: { type: Number, required: true },
   vertical: { type: Boolean, required: true },
-  scale: { type: Number, required: true },
   rollback: { type: Number, required: true },
   value: { type: Number, required: true },
   thick: { type: Number, required: true },
 })
 
 const offset = computed(() => {
-  const offset = (startValue.value - props.start) * props.scale
+  const offset = (startValue.value - props.start) * scaleFigure.value
   const positionValue = `${offset}px`
   return props.vertical ? { top: positionValue } : { left: positionValue }
 })
@@ -81,7 +90,7 @@ const handleDown = (e: MouseEvent) => {
   // props.$bus.$emit('selectFrameLock', true);
   const onMove = (e: MouseEvent) => {
     const currentD = props.vertical ? e.clientY : e.clientX
-    const newValue = Math.round(initValue + (currentD - startD) / props.scale)
+    const newValue = Math.round(initValue + (currentD - startD) / scaleFigure.value)
     startValue.value = newValue
   }
   const onEnd = () => {

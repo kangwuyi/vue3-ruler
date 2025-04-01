@@ -17,12 +17,22 @@ import { drawCanvaslRuler } from './utils.ts'
 import {
   lineListKey,
   DEFAULT_LINELIST,
-  type IFDrawRulerOption,
-  type IFRect,
+  scaleFigureKey,
+  DEFAULT_SCALE_FIGURE,
+  wdpRatioKey,
+  DEFAULT_WDP_RATIO,
 } from '../config/index.ts'
+import type { IFDrawRulerOption, IFRect } from '../config/index.ts'
 
+// ----- wdpRatio --------
+const wdpRatio = inject(wdpRatioKey, ref(DEFAULT_WDP_RATIO))
+watch(wdpRatio, (_) => console.log('inject wdpRatio', _), { deep: true })
+// ----- scaleFigure --------
+const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
+watch(scaleFigure, (_) => console.log('inject scaleFigure', _), { deep: true })
+// ----------
 const { updateLineList } = inject(lineListKey, DEFAULT_LINELIST)
-
+// --------
 const emit = defineEmits(['onIndicatorShow', 'onIndicatorMove', 'onIndicatorHide'])
 
 const getValueByOffset = (offset: number, start: number, scale: number): number =>
@@ -36,8 +46,6 @@ const props = defineProps({
   vertical: { type: Boolean, required: true },
   lineVisible: { type: Boolean, required: true },
   start: { type: Number, required: true },
-  scale: { type: Number, required: true },
-  ratio: { type: Number, required: true },
   width: { type: Number, required: true },
   height: { type: Number, required: true },
 })
@@ -62,12 +70,12 @@ const initCanvasRef = () => {
 }
 const updateCanvasContext = () => {
   // 比例宽高
-  canvasRef.value!.width = props.width * props.ratio
-  canvasRef.value!.height = props.height * props.ratio
+  canvasRef.value!.width = props.width * wdpRatio.value
+  canvasRef.value!.height = props.height * wdpRatio.value
   const ctx = canvasRef.value!.getContext('2d')!
-  ctx.font = `${12 * props.ratio}px -apple-system, 
-              "Helvetica Neue", ".SFNSText-Regular", 
-              "SF UI Text", Arial, "PingFang SC", "Hiragino Sans GB", 
+  ctx.font = `${12 * wdpRatio.value}px -apple-system,
+              "Helvetica Neue", ".SFNSText-Regular",
+              "SF UI Text", Arial, "PingFang SC", "Hiragino Sans GB",
               "Microsoft YaHei", "WenQuanYi Zen Hei", sans-serif`
   ctx.lineWidth = 1
   ctx.textBaseline = 'middle'
@@ -75,8 +83,8 @@ const updateCanvasContext = () => {
 
 const drawRuler = () => {
   const options: IFDrawRulerOption = {
-    scale: props.scale,
-    ratio: props.ratio,
+    scale: scaleFigure.value,
+    ratio: wdpRatio.value,
     width: props.width,
     height: props.height,
   }
@@ -96,18 +104,18 @@ const drawRuler = () => {
 }
 const handleClick = (e: MouseEvent) => {
   const offset = props.vertical ? e.offsetY : e.offsetX
-  const value = getValueByOffset(offset, props.start, props.scale) // 获取标尺数值
+  const value = getValueByOffset(offset, props.start, scaleFigure.value) // 获取标尺数值
   updateLineList(props.vertical ? 'vertical' : 'horizontal', 'add', value)
 }
 const handleEnter = (e: MouseEvent) => {
   const offset = props.vertical ? e.offsetY : e.offsetX
-  const value = getValueByOffset(offset, props.start, props.scale)
+  const value = getValueByOffset(offset, props.start, scaleFigure.value)
   emit('onIndicatorShow', value)
 }
 
 const handleMove = (e: MouseEvent) => {
   const offset = props.vertical ? e.offsetY : e.offsetX
-  const value = getValueByOffset(offset, props.start, props.scale)
+  const value = getValueByOffset(offset, props.start, scaleFigure.value)
   emit('onIndicatorMove', value)
 }
 

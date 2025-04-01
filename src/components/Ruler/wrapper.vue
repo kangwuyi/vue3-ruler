@@ -12,8 +12,6 @@
       :lineVisible="lineVisible"
       :rect="rect"
       :vertical="vertical"
-      :scale="scale"
-      :ratio="ratio"
       :width="width"
       :height="height"
       :start="start"
@@ -29,7 +27,6 @@
         :start="start"
         :vertical="vertical"
         :rollback="rollback"
-        :scale="scale"
         :thick="thick"
         :value="v >> 0"
         @onMouseDown="handleLineDown"
@@ -58,18 +55,20 @@ import LineRuler from './line.vue'
 import CanvasRuler from './canvas.vue'
 import {
   DEFAULT_THEME,
-  type IFLineList,
   lineListKey,
   DEFAULT_LINELIST,
-  type IFRect,
+  scaleFigureKey,
+  DEFAULT_SCALE_FIGURE,
 } from '../config/index.ts'
+import type { IFLineList, IFRect } from '../config/index.ts'
 
+// ----- scaleFigure --------
+const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
+// ---------------
 const emit = defineEmits(['update:lineVisible', 'onLineChange', 'onLineRemove'])
 const props = defineProps({
   rect: { type: Object as PropType<IFRect>, required: true },
   vertical: { type: Boolean, required: true },
-  scale: { type: Number, required: true },
-  ratio: { type: Number, required: true },
   width: { type: Number, required: true },
   thick: { type: Number, required: true },
   // 缓存被 thick 替换的宽高
@@ -79,6 +78,7 @@ const props = defineProps({
   lineVisible: { type: Boolean, required: true },
 })
 // --------------
+// ---------------
 // 线的数组
 const { lineList } = inject(lineListKey, DEFAULT_LINELIST)
 const curLineList = ref<number[]>([])
@@ -106,7 +106,7 @@ const rwStyle = computed(() => {
 
 const tmpValue = ref<number>(0)
 const indicatorStyle = computed(() => {
-  const indicatorOffset = (tmpValue.value - props.start) * props.scale
+  const indicatorOffset = (tmpValue.value - props.start) * scaleFigure.value
   const positionKey = props.vertical ? 'top' : 'left'
   const boderKey = props.vertical ? 'borderTop' : 'borderLeft'
   const sizeKey = props.vertical ? 'width' : 'height'
@@ -142,7 +142,7 @@ const handleLineRelease = (value: number, index: number) => {
   isDraggingLine.value = false
   // 左右或上下超出时, 删除该条对齐线
   const offset = value - props.start
-  const maxOffset = (props.vertical ? props.height : props.width) / props.scale
+  const maxOffset = (props.vertical ? props.height : props.width) / scaleFigure.value
   if (offset < 0 || offset > maxOffset) {
     emit('onLineRemove', index)
   } else {

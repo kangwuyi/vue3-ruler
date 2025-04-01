@@ -3,8 +3,8 @@
     <h1 @click="console.log('hi~')">Vue3-sketch-ruler</h1>
     <div class="ruler-box">
       <Ruler
-        :scale="scale"
-        :ratio="ratio"
+        :scaleFigure="scaleFigure"
+        :wdpRatio="wdpRatio"
         :thick="thick"
         :width="width"
         :height="height"
@@ -21,8 +21,8 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import Ruler from './components/index.vue'
-const scale = ref(1)
-const ratio = ref(1)
+const scaleFigure = ref(1)
+const wdpRatio = ref(1)
 const thick = ref(16)
 const width = ref(500)
 const height = ref(500)

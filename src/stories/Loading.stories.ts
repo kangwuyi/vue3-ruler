@@ -12,8 +12,8 @@ const meta = {
     // fadeIn: { control: 'select', options: ['full', 'half', 'quarter'] },
   },
   args: {
-    scale: 1,
-    ratio: 1,
+    scaleFigure: 1,
+    wdpRatio: 1,
     thick: 24,
     width: 500,
     height: 400,
@@ -42,10 +42,11 @@ type Story = StoryObj<typeof meta>
 export const Package: Story = {
   // 默认参数
   args: {
-    scale: 1,
     // color: 'red',
     // name: 'loadbar',
     // fadeIn: 'full',
     // noFadeIn: false,
+    scaleFigure: 1,
+    wdpRatio: 1,
   },
 }

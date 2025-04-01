@@ -8,8 +8,6 @@
     :thick="thick"
     :rollback="height"
     :start="startX"
-    :scale="scale"
-    :ratio="ratio"
     v-model:lineVisible="lineVisible"
   />
   <!-- 竖直方向 -->
@@ -21,8 +19,6 @@
     :thick="thick"
     :rollback="width"
     :start="startY"
-    :scale="scale"
-    :ratio="ratio"
     v-model:lineVisible="lineVisible"
   />
   <span
@@ -37,18 +33,28 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, provide, reactive, ref, type PropType } from 'vue'
+import { computed, defineProps, provide, reactive, ref, type PropType, watch } from 'vue'
 import RulerWrapper from './Ruler/wrapper.vue'
-import { DEFAULT_THEME, type IFLineList, lineListKey, type IFRect } from './config/index.ts'
+import {
+  DEFAULT_THEME,
+  DEFAULT_WDP_RATIO,
+  DEFAULT_SCALE_FIGURE,
+  wdpRatioKey,
+  lineListKey,
+  scaleFigureKey,
+} from './config/index.ts'
+import type { IFLineList, IFRect } from './config/index.ts'
 
 const props = defineProps({
-  scale: {
+  // Window.devicePixelRatio = {物理像素分辨率/CSS 像素分辨率}
+  wdpRatio: {
+    type: Number,
+    default: DEFAULT_WDP_RATIO,
+  },
+  // ------------------
+  scaleFigure: {
     type: Number,
     default: 1,
-  },
-  ratio: {
-    type: Number,
-    default: window.devicePixelRatio || 1,
   },
   thick: {
     type: Number,
@@ -80,6 +86,20 @@ const props = defineProps({
     default: false,
   },
 })
+// --- wdpRatio ---
+const wdpRatioRef = ref(DEFAULT_WDP_RATIO)
+provide(wdpRatioKey, wdpRatioRef)
+watch(
+  () => props.wdpRatio,
+  (_) => (wdpRatioRef.value = _),
+)
+// --- scale ---
+const scaleFigureRef = ref(DEFAULT_SCALE_FIGURE)
+provide(scaleFigureKey, scaleFigureRef)
+watch(
+  () => props.scaleFigure,
+  (_) => (scaleFigureRef.value = _),
+)
 // ---- 标注线 ----------
 
 const lineList = reactive<IFLineList>({

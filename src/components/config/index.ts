@@ -1,4 +1,4 @@
-import { type InjectionKey, type Reactive } from 'vue'
+import { type InjectionKey, type Reactive, type Ref } from 'vue'
 // --------
 export const DEFAULT_THEME: any = {
   bgColor: 'rgba(225,225,225, 0)', // ruler bg color
@@ -58,3 +58,9 @@ export interface IFRect {
   width: number
   height: number
 }
+// ---- Ratio -------
+export const DEFAULT_WDP_RATIO = window.devicePixelRatio || 1
+export const wdpRatioKey = Symbol('wdpRatio') as InjectionKey<Ref<number>>
+// ---- scale -------
+export const DEFAULT_SCALE_FIGURE = 1
+export const scaleFigureKey = Symbol('scaleFigure') as InjectionKey<Ref<number>>
