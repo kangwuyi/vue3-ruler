@@ -24,17 +24,20 @@ const canvasRef = ref<HTMLCanvasElement>()
 const canvasContext = ref<CanvasRenderingContext2D>()
 
 const props = defineProps({
+  shadow: { type: Object, required: true },
   vertical: { type: Boolean, required: true },
   start: { type: Number, required: true },
   scale: { type: Number, required: true },
   ratio: { type: Number, required: true },
   width: { type: Number, required: true },
   height: { type: Number, required: true },
-  selectStart: { type: Number, required: true },
-  selectLength: { type: Number, required: true },
 })
 watch(
-  () => [props.start, props.selectStart, props.selectLength],
+  () => props.shadow,
+  (_) => console.log(_),
+)
+watch(
+  () => [props.start, props.shadow],
   () => drawRuler(),
 )
 watch(
@@ -73,14 +76,14 @@ const drawRuler = () => {
     drawVerticalRuler(
       canvasContext.value!,
       props.start,
-      { y: props.selectStart, height: props.selectLength, x: 0, width: 0 },
+      { y: props.shadow.y, height: props.shadow.height, x: 0, width: 0 },
       options,
     )
   } else {
     drawHorizontalRuler(
       canvasContext.value!,
       props.start,
-      { x: props.selectStart, width: props.selectLength, y: 0, height: 0 },
+      { x: props.shadow.x, width: props.shadow.width, y: 0, height: 0 },
       options,
     )
   }

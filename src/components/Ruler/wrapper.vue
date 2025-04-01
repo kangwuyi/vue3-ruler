@@ -8,14 +8,13 @@
     :style="rwStyle"
   >
     <CanvasRuler
+      :shadow="shadow"
       :vertical="vertical"
       :scale="scale"
       :ratio="ratio"
       :width="width"
       :height="height"
       :start="start"
-      :selectStart="getSelectStart"
-      :selectLength="getSelectLength"
       @onIndicatorMove="handleIndicatorMove"
       @onIndicatorShow="handleIndicatorShow"
       @onIndicatorHide="handleIndicatorHide"
@@ -41,47 +40,48 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, defineEmits, inject, ref, watch } from 'vue'
+import { computed, defineProps, defineEmits, inject, ref, watch, onMounted } from 'vue'
 import LineRuler from './line.vue'
 import CanvasRuler from './canvas.vue'
 import { DEFAULT_THEME, lineListKey, DEFAULT_LINELIST } from '../config/index.ts'
 
 const emit = defineEmits(['update:lineVisible', 'onLineChange', 'onLineRemove'])
 const props = defineProps({
+  shadow: { type: Object, required: true },
   vertical: { type: Boolean, required: true },
   scale: { type: Number, required: true },
   ratio: { type: Number, required: true },
   width: { type: Number, required: true },
-  thick: { type: Number, required: true },
   height: { type: Number, required: true },
   start: { type: Number, required: true },
-  selectStart: { type: Number, required: true },
-  selectLength: { type: Number, required: true },
   lineVisible: { type: Boolean, required: true },
 })
 // --------------
+// 标尺高度
+const thick = ref(0)
+// 线的数组
 const { lineList } = inject(lineListKey, DEFAULT_LINELIST)
 const curLineList = ref<number[]>([])
-watch(
-  () => props.vertical,
-  (_) => (curLineList.value = _ ? lineList.vertical : lineList.horizontal),
-)
+// 初始化
+onMounted(() => {
+  curLineList.value = props.vertical ? lineList.vertical : lineList.horizontal
+  thick.value = props.vertical ? props.width : props.height
+})
+
 watch(lineList, (_) => (curLineList.value = props.vertical ? _.vertical : _.horizontal))
 // -------
 const isDraggingLine = ref(false)
 // --------
-const getSelectLength = computed(() => props.selectLength)
-const getSelectStart = computed(() => props.selectStart)
 const rwStyle = computed(() => {
   const hContainer = {
-    width: `calc(100% - ${props.thick}px)`,
-    height: `${props.thick}px`,
-    left: `${props.thick}px`,
+    width: `calc(100% - ${thick.value}px)`,
+    height: `${thick.value}px`,
+    left: `${thick.value}px`,
   }
   const vContainer = {
-    width: `${props.thick}px`,
-    height: `calc(100% - ${props.thick}px)`,
-    top: `${props.thick}px`,
+    width: `${thick.value}px`,
+    height: `calc(100% - ${thick.value}px)`,
+    top: `${thick.value}px`,
   }
   return props.vertical ? vContainer : hContainer
 })
@@ -89,13 +89,13 @@ const rwStyle = computed(() => {
 const tmpValue = ref<number>(0)
 const indicatorStyle = computed(() => {
   const indicatorOffset = (tmpValue.value - props.start) * props.scale
-  let positionKey = 'top'
-  let boderKey = 'borderLeft'
-  positionKey = props.vertical ? 'top' : 'left'
-  boderKey = props.vertical ? 'borderBottom' : 'borderLeft'
+  const positionKey = props.vertical ? 'top' : 'left'
+  const boderKey = props.vertical ? 'borderBottom' : 'borderLeft'
+  const sizeKey = props.vertical ? 'width' : 'height'
   return {
     [positionKey]: `${indicatorOffset}px`,
     [boderKey]: `1px dashed ${DEFAULT_THEME.cornerActiveColor}`,
+    [sizeKey]: `${props.vertical ? props.height : props.width}px`,
   }
 })
 
@@ -149,24 +149,28 @@ const handleLineRelease = (value: number, index: number) => {
     }
   }
   .indicator {
+    position: absolute;
+    pointer-events: none;
     padding: 0 2px;
     width: auto;
+    height: auto;
     .value {
+      display: inline-block;
       border: 1px solid #ffffff21;
       background: #e06a6a;
       color: #ffffff;
       font-size: 10px;
+      padding: 0 2px;
     }
   }
   &-h {
     top: 0;
     box-shadow: 0 10px 40px 0 #00000026;
     .indicator {
-      top: 7px;
-      height: 100vw;
+      top: 0;
       .value {
-        margin-left: 1px;
-        margin-top: 5px;
+        margin-left: 0;
+        margin-top: 0;
       }
     }
   }
@@ -176,13 +180,11 @@ const handleLineRelease = (value: number, index: number) => {
     // border-right: 1px solid #3b3b3b;
     box-shadow: 0 10px 40px 0 #00000026;
     .indicator {
-      width: 100vw;
       .value {
-        left: 0px;
-        margin-left: 12px;
+        margin-left: 0;
         margin-top: 0;
-        transform-origin: 0 0;
-        transform: rotate(-90deg);
+        // transform-origin: 0 0;
+        // transform: rotate(-90deg);
       }
     }
   }

@@ -1,40 +1,39 @@
 <template>
   <!-- 水平方向 -->
   <RulerWrapper
+    :shadow="shadow"
     :vertical="false"
     :width="width"
     :height="thick"
-    :thick="thick"
     :start="startX"
-    :selectStart="getShadow.x"
-    :selectLength="getShadow.width"
     :scale="scale"
     :ratio="ratio"
     v-model:lineVisible="lineVisible"
   />
   <!-- 竖直方向 -->
   <RulerWrapper
+    :shadow="shadow"
     :vertical="true"
     :width="thick"
     :height="height"
-    :thick="thick"
     :start="startY"
-    :selectStart="getShadow.y"
-    :selectLength="getShadow.height"
     :scale="scale"
     :ratio="ratio"
     v-model:lineVisible="lineVisible"
   />
   <span
-    class="ruler-_-corner"
-    :class="cornerActiveClass"
+    class=""
+    :class="{
+      'ruler-_-corner': true,
+      'ruler-_-corner-active': cornerActive,
+    }"
     :style="cornerStyle"
     @click="handleLineVisibleChange"
   ></span>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, watch, provide, reactive, ref } from 'vue'
+import { computed, defineProps, provide, reactive, ref } from 'vue'
 import RulerWrapper from './Ruler/wrapper.vue'
 import { DEFAULT_THEME, type IFLineList, lineListKey, type IFShadow } from './config/index.ts'
 
@@ -72,7 +71,10 @@ const props = defineProps({
         height: 0,
       }) as IFShadow,
   },
-  cornerActive: Boolean,
+  cornerActive: {
+    type: Boolean,
+    default: false,
+  },
 })
 // ---- 标注线 ----------
 
@@ -81,9 +83,6 @@ const lineList = reactive<IFLineList>({
   horizontal: [],
   // 纵向
   vertical: [],
-})
-watch(lineList, (_) => {
-  console.log('watch lineList ', lineList)
 })
 type lineActionType = 'del' | 'add'
 type lineDirectionType = 'horizontal' | 'vertical'
@@ -99,7 +98,6 @@ provide(lineListKey, {
   updateLineList,
 })
 // --------------
-const cornerActiveClass = computed(() => (props.cornerActive ? ' active' : ''))
 const cornerStyle = computed(() => ({
   backgroundColor: DEFAULT_THEME.bgColor,
   width: `${props.thick}px`,
@@ -108,10 +106,22 @@ const cornerStyle = computed(() => ({
   borderBottom: `1px solid ${DEFAULT_THEME.borderColor}`,
 }))
 
-const getShadow = computed(() => props.shadow)
 // 标注线 [展示|隐藏]
 const lineVisible = ref<boolean>(false)
 const handleLineVisibleChange = () => (lineVisible.value = !lineVisible.value)
 </script>
 
-<style lang="less" src="./index.less"></style>
+<style lang="less">
+.ruler-_-corner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-sizing: content-box;
+  &-active {
+    background-color: aqua !important;
+  }
+}
+</style>
