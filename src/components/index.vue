@@ -1,22 +1,20 @@
 <template>
   <!-- 水平方向 -->
   <RulerWrapper
-    :rect="rect"
     :isVertical="false"
     :width="width"
-    :height="thickNext"
-    :thick="thickNext"
+    :height="thick"
+    :thick="thick"
     :rollback="height"
     :start="startX"
     v-model:lineVisible="lineVisible"
   />
   <!-- 竖直方向 -->
   <RulerWrapper
-    :rect="rect"
     :isVertical="true"
-    :width="thickNext"
+    :width="thick"
     :height="height"
-    :thick="thickNext"
+    :thick="thick"
     :rollback="width"
     :start="startY"
     v-model:lineVisible="lineVisible"
@@ -36,14 +34,13 @@
 import {
   computed,
   defineProps,
-  defineEmits,
+  // defineEmits,
   provide,
   reactive,
   ref,
   type PropType,
   type CSSProperties,
   watch,
-  onMounted,
 } from 'vue'
 import RulerWrapper from './Ruler/wrapper.vue'
 import {
@@ -53,55 +50,35 @@ import {
   wdpRatioKey,
   lineListKey,
   scaleFigureKey,
+  rectKey,
+  DEFAULT_RECT,
 } from './config/index.ts'
 import type { IFLineList, IFRect } from './config/index.ts'
 
-const emit = defineEmits([
-  // 选中组件的坐标值发生改变, rect.rect|rect.y
-  // 可能的情况，选中组件移动过程中发生吸附其他组件或中轴线或边界线
-  'update:rect',
-])
+// const emit = defineEmits([
+//   // 选中组件的坐标值发生改变, rect.rect|rect.y
+//   // 可能的情况，选中组件移动过程中发生吸附其他组件或中轴线或边界线
+//   'update:rect',
+// ])
 
 const props = defineProps({
+  // 变量
   // Window.devicePixelRatio = {物理像素分辨率/CSS 像素分辨率}
-  wdpRatio: {
-    type: Number,
-    default: DEFAULT_WDP_RATIO,
-  },
+  wdpRatio: { type: Number, default: DEFAULT_WDP_RATIO },
   // ------------------
-  scaleFigure: {
-    type: Number,
-    default: 1,
-  },
-  thick: {
-    type: Number,
-    default: 16,
-  },
-  width: { type: Number, required: true },
-  height: { type: Number, required: true },
-  startX: {
-    type: Number,
-    default: 0,
-  },
-  startY: {
-    type: Number,
-    default: 0,
-  },
+  scaleFigure: { type: Number, default: 1 },
   // 传入阴影部分，选中画布组件，在标尺中标注组件位置
   rect: {
     type: Object as PropType<IFRect>,
-    default: () =>
-      ({
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-      }) as IFRect,
+    default: () => DEFAULT_RECT as IFRect,
   },
-  cornerActive: {
-    type: Boolean,
-    default: false,
-  },
+  // 常量
+  thick: { type: Number, default: 16 },
+  width: { type: Number, required: true },
+  height: { type: Number, required: true },
+  startX: { type: Number, default: 0 },
+  startY: { type: Number, default: 0 },
+  cornerActive: { type: Boolean, default: false },
 })
 // --- wdpRatio ---
 const wdpRatioRef = ref(props.wdpRatio || DEFAULT_WDP_RATIO)
@@ -117,9 +94,15 @@ watch(
   () => props.scaleFigure,
   (_) => (scaleFigureRef.value = _),
 )
-// ------ thick ------------------------
-const thickNext = computed(() => props.thick * wdpRatioRef.value * scaleFigureRef.value)
-
+// ------ rect ----------
+const updateRect = () => console.log('updateRect')
+provide('updateRect', updateRect)
+const rectReactive = reactive(props.rect || DEFAULT_RECT)
+provide(rectKey, rectReactive)
+watch(
+  () => props.rect,
+  (_) => Object.assign(rectReactive, _),
+)
 // ---- 标注线 ----------
 const lineList = reactive<IFLineList>({
   // 横向

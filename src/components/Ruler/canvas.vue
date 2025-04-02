@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, watch, onMounted, defineEmits, inject, type PropType } from 'vue'
+import { defineProps, ref, watch, onMounted, defineEmits, inject, reactive } from 'vue'
 import { drawCanvaslRuler } from './utils.ts'
 import {
   lineListKey,
@@ -21,8 +21,10 @@ import {
   DEFAULT_SCALE_FIGURE,
   wdpRatioKey,
   DEFAULT_WDP_RATIO,
+  rectKey,
+  DEFAULT_RECT,
 } from '../config/index.ts'
-import type { IFDrawRulerOption, IFRect } from '../config/index.ts'
+import type { IFDrawRulerOption } from '../config/index.ts'
 
 // ----- wdpRatio --------
 const wdpRatio = inject(wdpRatioKey, ref(DEFAULT_WDP_RATIO))
@@ -30,6 +32,10 @@ watch(wdpRatio, (_) => console.log('inject wdpRatio', _), { deep: true })
 // ----- scaleFigure --------
 const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
 watch(scaleFigure, (_) => console.log('inject scaleFigure', _), { deep: true })
+// ---------- rect ---------
+const rect = inject(rectKey, reactive(DEFAULT_RECT))
+watch(rect, (_) => console.log('inject rect', _), { deep: true })
+
 // ----------
 const { updateLineList } = inject(lineListKey, DEFAULT_LINELIST)
 // --------
@@ -42,19 +48,15 @@ const canvasRef = ref<HTMLCanvasElement>()
 const canvasContext = ref<CanvasRenderingContext2D>()
 
 const props = defineProps({
-  rect: { type: Object as PropType<IFRect>, required: true },
   isVertical: { type: Boolean, required: true },
   lineVisible: { type: Boolean, required: true },
   start: { type: Number, required: true },
   width: { type: Number, required: true },
   height: { type: Number, required: true },
 })
+
 watch(
-  () => props.rect,
-  (_) => console.log(_),
-)
-watch(
-  () => [props.start, props.rect],
+  () => [props.start, rect],
   () => drawRuler(),
 )
 watch(
@@ -94,10 +96,10 @@ const drawRuler = () => {
     canvasContext.value!,
     props.start,
     {
-      x: props.isVertical ? 0 : props.rect.x,
-      width: props.isVertical ? 0 : props.rect.width,
-      y: props.isVertical ? props.rect.y : 0,
-      height: props.isVertical ? props.rect.height : 0,
+      x: props.isVertical ? 0 : rect.x,
+      width: props.isVertical ? 0 : rect.width,
+      y: props.isVertical ? rect.y : 0,
+      height: props.isVertical ? rect.height : 0,
     },
     options,
   )

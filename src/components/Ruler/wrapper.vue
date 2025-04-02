@@ -10,7 +10,6 @@
   >
     <CanvasRuler
       :lineVisible="lineVisible"
-      :rect="rect"
       :isVertical="isVertical"
       :width="width"
       :height="height"
@@ -68,7 +67,6 @@ const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
 // ---------------
 const emit = defineEmits(['update:lineVisible', 'onLineChange', 'onLineRemove'])
 const props = defineProps({
-  rect: { type: Object as PropType<IFRect>, required: true },
   isVertical: { type: Boolean, required: true },
   width: { type: Number, required: true },
   height: { type: Number, required: true },

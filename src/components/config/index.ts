@@ -51,13 +51,20 @@ export interface IFDrawRulerOption {
   height: number
 }
 
-// --------- shadow -----------
+// --------- rect -----------
 export interface IFRect {
   x: number
   y: number
   width: number
   height: number
 }
+export const DEFAULT_RECT = {
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+}
+export const rectKey: InjectionKey<Reactive<IFRect>> = Symbol('rect')
 // ---- Ratio -------
 export const DEFAULT_WDP_RATIO = window.devicePixelRatio || 1
 export const wdpRatioKey = Symbol('wdpRatio') as InjectionKey<Ref<number>>
