@@ -13,7 +13,7 @@ export default defineConfig({
     DefineOptions(),
     dts({
       // 将所有声明合并到一个文件
-      rollupTypes: true,
+      rollupTypes: false,
       // 指定 tsconfigPath
       tsconfigPath: './tsconfig.bundle.json',
       // 基于 package.json 的 `types` 字段生成，或者 `${outDir}/index.d.ts`
@@ -51,8 +51,8 @@ export default defineConfig({
     // 库模式打包
     lib: {
       entry: resolve(__dirname, '/src/components/index.ts'),
-      name: 'vue3-spinner',
-      fileName: 'vue3-spinner',
+      name: 'vue3-sketch-ruler',
+      fileName: 'vue3-sketch-ruler',
       formats: ['es', 'umd'],
     },
   },

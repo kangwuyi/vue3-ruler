@@ -71,7 +71,12 @@ const props = defineProps({
   // 传入阴影部分，选中画布组件，在标尺中标注组件位置
   rect: {
     type: Object as PropType<IFRect>,
-    default: () => DEFAULT_RECT as IFRect,
+    default: () => ({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    }),
   },
   // 常量
   thick: { type: Number, default: 16 },

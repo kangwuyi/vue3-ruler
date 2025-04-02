@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import Ruler from './components/index.vue'
+import Ruler from './components/ruler.vue'
 const scaleFigure = ref(1)
 const wdpRatio = ref(1)
 const thick = ref(16)
