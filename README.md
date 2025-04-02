@@ -1,9 +1,9 @@
 # vue3-sketch-ruler
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/vue3-spinkit"><img src="https://img.shields.io/npm/dm/vue3-spinkit.svg?sanitize=true" alt="Downloads"></a>
-  <a href="https://www.npmjs.com/package/vue3-spinkit"><img src="https://img.shields.io/npm/v/vue3-spinkit.svg?sanitize=true" alt="Version"></a>
-  <a href="https://www.npmjs.com/package/vue3-spinkit"><img src="https://img.shields.io/npm/l/vue3-spinkit.svg?sanitize=true" alt="License"></a>
+  <a href="https://www.npmjs.com/package/vue3-sketch-ruler"><img src="https://img.shields.io/npm/dm/vue3-sketch-ruler.svg?sanitize=true" alt="Downloads"></a>
+  <a href="https://www.npmjs.com/package/vue3-sketch-ruler"><img src="https://img.shields.io/npm/v/vue3-sketch-ruler.svg?sanitize=true" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vue3-sketch-ruler"><img src="https://img.shields.io/npm/l/vue3-sketch-ruler.svg?sanitize=true" alt="License"></a>
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
 
 <p align="center">
 
-![Depfu](https://img.shields.io/depfu/kangwuyi/vue3-spinkit) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/kangwuyi/vue3-spinkit) [![Code Coverage](https://img.shields.io/codecov/c/github/kangwuyi/vue3-spinkit)](https://codecov.io/github/kangwuyi/vue3-spinkit) [![Code Coverage](https://github.com/kangwuyi/vue3-spinkit/actions/workflows/node.js.yml/badge.svg)](https://github.com/kangwuyi/kangwuyi/vue3-spinkit)
+![Depfu](https://img.shields.io/depfu/kangwuyi/vue3-sketch-ruler) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/kangwuyi/vue3-sketch-ruler) [![Code Coverage](https://img.shields.io/codecov/c/github/kangwuyi/vue3-sketch-ruler)](https://codecov.io/github/kangwuyi/vue3-sketch-ruler) [![Code Coverage](https://github.com/kangwuyi/vue3-sketch-ruler/actions/workflows/node.js.yml/badge.svg)](https://github.com/kangwuyi/kangwuyi/vue3-sketch-ruler)
 
 
 </p>
