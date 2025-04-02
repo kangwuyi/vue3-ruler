@@ -1,9 +1,9 @@
 # vue3-sketch-ruler
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/vue3-sketch-ruler"><img src="https://img.shields.io/npm/dm/vue3-sketch-ruler.svg?sanitize=true" alt="Downloads"></a>
-  <a href="https://www.npmjs.com/package/vue3-sketch-ruler"><img src="https://img.shields.io/npm/v/vue3-sketch-ruler.svg?sanitize=true" alt="Version"></a>
-  <a href="https://www.npmjs.com/package/vue3-sketch-ruler"><img src="https://img.shields.io/npm/l/vue3-sketch-ruler.svg?sanitize=true" alt="License"></a>
+  <a href="https://www.npmjs.com/package/@kangwuyi/vue3-sketch-ruler"><img src="https://img.shields.io/npm/dm/@kangwuyi/vue3-sketch-ruler.svg?sanitize=true" alt="Downloads"></a>
+  <a href="https://www.npmjs.com/package/@kangwuyi/vue3-sketch-ruler"><img src="https://img.shields.io/npm/v/@kangwuyi/vue3-sketch-ruler.svg?sanitize=true" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/@kangwuyi/vue3-sketch-ruler"><img src="https://img.shields.io/npm/l/@kangwuyi/vue3-sketch-ruler.svg?sanitize=true" alt="License"></a>
 </p>
 
 <p align="center">
