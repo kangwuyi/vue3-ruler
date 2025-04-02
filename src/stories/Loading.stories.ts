@@ -16,7 +16,7 @@ const meta = {
     wdpRatio: 1,
     thick: 24,
     width: 400,
-    height: 300,
+    height: 200,
     startX: 0,
     startY: 0,
     rect: {

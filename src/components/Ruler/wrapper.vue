@@ -47,7 +47,6 @@ import {
   ref,
   watch,
   onMounted,
-  type PropType,
   type Reactive,
   type CSSProperties,
 } from 'vue'
@@ -60,8 +59,11 @@ import {
   scaleFigureKey,
   DEFAULT_SCALE_FIGURE,
 } from '../config/index.ts'
-import type { IFLineList, IFRect } from '../config/index.ts'
+import type { IFLineList } from '../config/index.ts'
 
+// 线的数组
+const { lineList } = inject(lineListKey, DEFAULT_LINELIST)
+const curLineList = ref<number[]>([])
 // ----- scaleFigure --------
 const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
 // ---------------
@@ -78,9 +80,6 @@ const props = defineProps({
 })
 // --------------
 // ---------------
-// 线的数组
-const { lineList } = inject(lineListKey, DEFAULT_LINELIST)
-const curLineList = ref<number[]>([])
 // 初始化
 const refreshCurLineList = (_: Reactive<IFLineList>) =>
   (curLineList.value = props.isVertical ? _.vertical : _.horizontal)
@@ -104,17 +103,11 @@ const rwStyle = computed<CSSProperties>(() => {
 })
 
 const tmpValue = ref<number>(0)
-const indicatorStyle = computed<CSSProperties>(() => {
-  const indicatorOffset = (tmpValue.value - props.start) * scaleFigure.value
-  const positionKey = props.isVertical ? 'top' : 'left'
-  const boderKey = props.isVertical ? 'borderTop' : 'borderLeft'
-  const sizeKey = props.isVertical ? 'width' : 'height'
-  return {
-    [positionKey]: `${indicatorOffset}px`,
-    [boderKey]: `1px dashed ${DEFAULT_THEME.cornerActiveColor}`,
-    [sizeKey]: `${props.rollback + props.thick}px`,
-  }
-})
+const indicatorStyle = computed<CSSProperties>(() => ({
+  [props.isVertical ? 'top' : 'left']: `${(tmpValue.value - props.start) * scaleFigure.value}px`,
+  [props.isVertical ? 'borderTop' : 'borderLeft']: `1px dashed ${DEFAULT_THEME.cornerActiveColor}`,
+  [props.isVertical ? 'width' : 'height']: `${props.rollback + props.thick}px`,
+}))
 
 // 栅格线展示
 const handleIndicatorShow = (value: number) => {

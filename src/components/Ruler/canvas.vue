@@ -34,8 +34,14 @@ const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
 watch(scaleFigure, (_) => console.log('inject scaleFigure', _), { deep: true })
 // ---------- rect ---------
 const rect = inject(rectKey, reactive(DEFAULT_RECT))
-watch(rect, (_) => console.log('inject rect', _), { deep: true })
-
+watch(
+  rect,
+  (_) => {
+    drawRuler()
+    console.log('inject rect', _)
+  },
+  { deep: true },
+)
 // ----------
 const { updateLineList } = inject(lineListKey, DEFAULT_LINELIST)
 // --------
@@ -44,8 +50,8 @@ const emit = defineEmits(['onIndicatorShow', 'onIndicatorMove', 'onIndicatorHide
 const getValueByOffset = (offset: number, start: number, scale: number): number =>
   Math.round(start + offset / scale)
 
-const canvasRef = ref<HTMLCanvasElement>()
-const canvasContext = ref<CanvasRenderingContext2D>()
+const canvasRef = ref<HTMLCanvasElement | null>(null)
+const canvasContext = ref<CanvasRenderingContext2D | null>(null)
 
 const props = defineProps({
   isVertical: { type: Boolean, required: true },
@@ -56,8 +62,11 @@ const props = defineProps({
 })
 
 watch(
-  () => [props.start, rect],
-  () => drawRuler(),
+  () => [props.start],
+  () => {
+    console.log('watch [props.start, rect]')
+    drawRuler()
+  },
 )
 watch(
   () => [props.width, props.height],
@@ -66,21 +75,26 @@ watch(
     drawRuler()
   },
 )
-
-const initCanvasRef = () => {
-  canvasContext.value = (canvasRef.value && canvasRef.value.getContext('2d')) || undefined
-}
+// ---------
+onMounted(() => {
+  updateCanvasContext()
+  drawRuler()
+})
+// -------------------
 const updateCanvasContext = () => {
+  if (!canvasRef.value) return
   // 比例宽高
-  canvasRef.value!.width = props.width * wdpRatio.value
-  canvasRef.value!.height = props.height * wdpRatio.value
-  const ctx = canvasRef.value!.getContext('2d')!
+  canvasRef.value.width = props.width * wdpRatio.value
+  canvasRef.value.height = props.height * wdpRatio.value
+  const ctx = canvasRef.value.getContext('2d')!
   ctx.font = `${12 * wdpRatio.value}px -apple-system,
               "Helvetica Neue", ".SFNSText-Regular",
               "SF UI Text", Arial, "PingFang SC", "Hiragino Sans GB",
               "Microsoft YaHei", "WenQuanYi Zen Hei", sans-serif`
   ctx.lineWidth = 1
   ctx.textBaseline = 'middle'
+  //
+  canvasContext.value = ctx
 }
 
 const drawRuler = () => {
@@ -120,12 +134,6 @@ const handleMove = (e: MouseEvent) => {
   const value = getValueByOffset(offset, props.start, scaleFigure.value)
   emit('onIndicatorMove', value)
 }
-
-onMounted(() => {
-  initCanvasRef()
-  updateCanvasContext()
-  drawRuler()
-})
 </script>
 
 <style lang="less">

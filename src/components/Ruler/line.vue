@@ -48,39 +48,20 @@ const props = defineProps({
   thick: { type: Number, required: true },
 })
 
-const offset = computed<CSSProperties>(() => {
-  const offset = (startValue.value - props.start) * scaleFigure.value
-  const positionValue = `${offset}px`
-  return props.isVertical ? { top: positionValue } : { left: positionValue }
-})
-
-const borderCursor = computed<CSSProperties>(() => {
-  const borderValue = `1px solid ${DEFAULT_THEME.lineColor}`
-  const border = props.isVertical ? { borderTop: borderValue } : { borderLeft: borderValue }
-  return {
-    // ns↕️ ew↔️
-    cursor: props.isVertical ? 'ns-resize' : 'ew-resize',
-    ...border,
-  }
-})
-const sizeStyle = computed<CSSProperties>(() =>
-  props.isVertical
-    ? {
-        width: `${props.rollback + props.thick}px`,
-      }
-    : {
-        height: `${props.rollback + props.thick}px`,
-      },
-)
-const actionStyle = computed(() =>
-  props.isVertical
-    ? {
-        left: `${props.thick - 21}px`,
-      }
-    : {
-        top: `${props.thick - 15}px`,
-      },
-)
+const offset = computed<CSSProperties>(() => ({
+  [props.isVertical ? 'top' : 'left']: `${(startValue.value - props.start) * scaleFigure.value}px`,
+}))
+const borderCursor = computed<CSSProperties>(() => ({
+  [props.isVertical ? 'borderTop' : 'borderLeft']: `1px solid ${DEFAULT_THEME.lineColor}`,
+  // ns↕️ ew↔️
+  cursor: props.isVertical ? 'ns-resize' : 'ew-resize',
+}))
+const sizeStyle = computed<CSSProperties>(() => ({
+  [props.isVertical ? 'width' : 'height']: `${props.rollback + props.thick}px`,
+}))
+const actionStyle = computed(() => ({
+  [props.isVertical ? 'left' : 'top']: `${props.thick - (props.isVertical ? 21 : 15)}px`,
+}))
 
 const handleDown = (e: MouseEvent) => {
   const startD = props.isVertical ? e.clientY : e.clientX
