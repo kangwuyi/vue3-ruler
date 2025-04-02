@@ -52,6 +52,7 @@ import {
   scaleFigureKey,
   rectKey,
   DEFAULT_RECT,
+  DEFAULT_LINELIST,
 } from './config/index.ts'
 import type { IFLineList, IFRect } from './config/index.ts'
 
@@ -104,12 +105,7 @@ watch(
   (_) => Object.assign(rectReactive, _),
 )
 // ---- 标注线 ----------
-const lineList = reactive<IFLineList>({
-  // 横向
-  horizontal: [],
-  // 纵向
-  vertical: [],
-})
+const lineList = reactive<IFLineList>(DEFAULT_LINELIST.lineList)
 type lineActionType = 'del' | 'add'
 type lineDirectionType = 'horizontal' | 'vertical'
 const updateLineList = (f: lineDirectionType, t: lineActionType, i: number) => {
