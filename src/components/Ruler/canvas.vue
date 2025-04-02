@@ -31,14 +31,13 @@ const wdpRatio = inject(wdpRatioKey, ref(DEFAULT_WDP_RATIO))
 watch(wdpRatio, (_) => console.log('inject wdpRatio', _), { deep: true })
 // ----- scaleFigure --------
 const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
-watch(scaleFigure, (_) => console.log('inject scaleFigure', _), { deep: true })
 // ---------- rect ---------
 const rect = inject(rectKey, reactive(DEFAULT_RECT))
 watch(
-  rect,
-  (_) => {
+  [rect, scaleFigure],
+  ([_rect, _scaleFigure]) => {
     drawRuler()
-    console.log('inject rect', _)
+    console.log('inject _rect,_scaleFigure', _rect, _scaleFigure)
   },
   { deep: true },
 )
@@ -98,6 +97,7 @@ const updateCanvasContext = () => {
 }
 
 const drawRuler = () => {
+  if (!canvasContext.value) return
   const options: IFDrawRulerOption = {
     scale: scaleFigure.value,
     ratio: wdpRatio.value,
@@ -107,7 +107,7 @@ const drawRuler = () => {
 
   drawCanvaslRuler(
     props.isVertical,
-    canvasContext.value!,
+    canvasContext.value,
     props.start,
     {
       x: props.isVertical ? 0 : rect.x,
