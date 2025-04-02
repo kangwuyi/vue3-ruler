@@ -50,6 +50,7 @@ import {
   type Reactive,
   type CSSProperties,
 } from 'vue'
+import lodash from 'lodash'
 import LineRuler from './line.vue'
 import CanvasRuler from './canvas.vue'
 import {
@@ -117,9 +118,10 @@ const handleIndicatorShow = (value: number) => {
 }
 
 // 栅格线跟随鼠标移动
-const handleIndicatorMove = (value: number) => {
+const handleIndicatorMove = lodash.debounce((value: number) => {
+  console.log('move')
   tmpValue.value = value
-}
+}, 1)
 // 栅格线隐藏
 const handleIndicatorHide = () => emit('update:lineVisible', false)
 

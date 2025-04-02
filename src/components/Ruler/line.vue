@@ -62,14 +62,17 @@ const sizeStyle = computed<CSSProperties>(() => ({
 const actionStyle = computed(() => ({
   [props.isVertical ? 'left' : 'top']: `${props.thick - (props.isVertical ? 21 : 15)}px`,
 }))
-
+// ------------
 const handleDown = (e: MouseEvent) => {
   const startD = props.isVertical ? e.clientY : e.clientX
   const initValue = startValue.value
   emit('onMouseDown')
   // 锁定框选工具
   // props.$bus.$emit('selectFrameLock', true);
+
+  // 使用防抖函数
   const onMove = (e: MouseEvent) => {
+    console.log('move')
     const currentD = props.isVertical ? e.clientY : e.clientX
     const newValue = Math.round(initValue + (currentD - startD) / scaleFigure.value)
     startValue.value = newValue
