@@ -29,7 +29,7 @@ import {
 import type { IFDrawRulerOption, TUpdateLineList } from '../config/index.ts'
 
 // ---------------------------
-const emit = defineEmits(['onLineVisible', 'onLineMove', 'onLineDisable', 'onVisibleDotted'])
+const emit = defineEmits(['onLineVisible', 'onLineMove', 'onLineDisable', 'onLineMoveEnd'])
 // ----- wdpRatio --------
 const wdpRatio = inject(wdpRatioKey, ref(DEFAULT_WDP_RATIO))
 watch(wdpRatio, (_) => console.log('inject wdpRatio', _), { deep: true })
@@ -135,7 +135,6 @@ const handleEnter = (e: MouseEvent) => {
   const offset = props.isVertical ? e.offsetY : e.offsetX
   const value = getValueByOffset(offset, props.start, scaleFigure.value)
   emit('onLineVisible', value)
-  emit('onVisibleDotted', true)
 }
 
 const handleMove = (e: MouseEvent) => {
@@ -143,7 +142,7 @@ const handleMove = (e: MouseEvent) => {
   const value = getValueByOffset(offset, props.start, scaleFigure.value)
   emit('onLineMove', value)
 }
-const handleLeave = () => emit('onVisibleDotted', false)
+const handleLeave = () => emit('onLineMoveEnd', false)
 </script>
 
 <style lang="less">

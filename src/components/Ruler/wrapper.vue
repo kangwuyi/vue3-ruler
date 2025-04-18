@@ -14,9 +14,9 @@
       :height="height"
       :start="start"
       @onLineMove="handleLineMove"
+      @onLineMoveEnd="handleLineMoveEnd"
       @onLineVisible="handleLineVisible"
       @onLineDisable="handleLineDisable"
-      @onVisibleDotted="handleVisibleDotted"
     />
     <div v-if="lineVisible" class="ruler-_-line-box">
       <LineRuler
@@ -34,7 +34,7 @@
       />
     </div>
     <div v-if="visibleDotted" class="indicator" :style="indicatorStyle" v-show="lineVisible">
-      <div class="value">{{ tmpValue }}</div>
+      <div class="value">{{ cache }}</div>
     </div>
   </div>
 </template>
@@ -96,9 +96,9 @@ const rwStyle = computed<CSSProperties>(() => {
   return props.isVertical ? vContainer : hContainer
 })
 
-const tmpValue = ref<number>(0)
+const cache = ref<number>(0)
 const indicatorStyle = computed<CSSProperties>(() => ({
-  [props.isVertical ? 'top' : 'left']: `${(tmpValue.value - props.start) * scaleFigure.value}px`,
+  [props.isVertical ? 'top' : 'left']: `${(cache.value - props.start) * scaleFigure.value}px`,
   [props.isVertical ? 'borderTop' : 'borderLeft']: `1px dashed ${DEFAULT_THEME.cornerActiveColor}`,
   [props.isVertical ? 'width' : 'height']: `${props.rollback + props.thick}px`,
 }))
@@ -106,15 +106,17 @@ const indicatorStyle = computed<CSSProperties>(() => ({
 // 栅格线展示
 const handleLineVisible = (value: number) => {
   if (!isMovingLine.value) {
-    tmpValue.value = value
+    cache.value = value
   }
+  handleVisibleDotted(true)
 }
 
 // 栅格线跟随鼠标移动
 const handleLineMove = lodash.debounce((value: number) => {
   console.log('move')
-  tmpValue.value = value
+  cache.value = value
 }, 1)
+const handleLineMoveEnd = () => handleVisibleDotted(false)
 // 栅格线隐藏
 const handleLineDisable = () => emit('update:lineVisible', false)
 
