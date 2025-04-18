@@ -5,7 +5,7 @@ export const DEFAULT_THEME: any = {
   // 刻度尺
   longfgColor: '#3B3B3B', // ruler longer mark color
   shortfgColor: '#3B3B3B', // ruler shorter mark color
-  fontColor: '#ffffff4d', // ruler font color
+  fontColor: '#f3f3f3', // ruler font color
   shadowColor: '#3275ff1a', // ruler shadow color
   lineColor: '#E02020',
   borderColor: '#3B3B3B',

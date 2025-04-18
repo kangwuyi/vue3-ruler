@@ -88,12 +88,14 @@ onMounted(() => {
 })
 // -------------------
 const updateCanvasContext = () => {
+  console.log('wdpRatio.value', wdpRatio.value)
   if (!canvasRef.value) return
   // 比例宽高
   canvasRef.value.width = props.width * wdpRatio.value
   canvasRef.value.height = props.height * wdpRatio.value
   const ctx = canvasRef.value.getContext('2d')!
-  ctx.font = `normal ${12 * wdpRatio.value}px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
+  ctx.font = `normal ${12 * wdpRatio.value}px   'PingFang SC',
+    'Microsoft YaHei', monospace, sans-serif`
   ctx.lineWidth = 1
   ctx.textBaseline = 'middle'
   //

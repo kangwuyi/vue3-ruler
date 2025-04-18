@@ -87,6 +87,7 @@ const props = defineProps({
   height: { type: Number, required: true },
   startX: { type: Number, default: 0 },
   startY: { type: Number, default: 0 },
+  markLineList: { type: Array, default: [] },
 })
 // --- wdpRatio ---
 const wdpRatioRef = ref(props.wdpRatio || DEFAULT_WDP_RATIO)

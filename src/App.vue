@@ -11,6 +11,7 @@
         :startX="startX"
         :startY="startY"
         :rect="rect"
+        :markLineList="markLineList"
       />
     </div>
   </div>
@@ -33,6 +34,7 @@ const rect = reactive({
   width: 200,
   height: 100,
 })
+const markLineList = ref([])
 </script>
 
 <style scoped lang="less">
