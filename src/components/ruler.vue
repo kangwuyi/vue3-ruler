@@ -2,6 +2,7 @@
   <!-- 水平方向 -->
   <RulerWrapper
     :isVertical="false"
+    :markLineList="lineList['horizontal']"
     :width="width"
     :height="thick"
     :thick="thick"
@@ -12,6 +13,7 @@
   <!-- 竖直方向 -->
   <RulerWrapper
     :isVertical="true"
+    :markLineList="lineList['vertical']"
     :width="thick"
     :height="height"
     :thick="thick"
@@ -36,13 +38,11 @@
 import {
   computed,
   defineProps,
-  // defineEmits,
+  defineEmits,
   provide,
-  reactive,
   ref,
   type PropType,
   type CSSProperties,
-  watch,
 } from 'vue'
 import { IconEye, IconEyeX } from '@tabler/icons-vue'
 import RulerWrapper from './Ruler/wrapper.vue'
@@ -51,87 +51,85 @@ import {
   DEFAULT_WDP_RATIO,
   DEFAULT_SCALE_FIGURE,
   wdpRatioKey,
-  lineListKey,
   scaleFigureKey,
   rectKey,
   DEFAULT_RECT,
-  DEFAULT_LINELIST,
+  lineListCbKey,
 } from './config/index.ts'
-import type { IFLineList, IFRect } from './config/index.ts'
+import type {
+  IFLineListByProps,
+  IFLineList,
+  IFRect,
+  TLineActionType,
+  TLineDirectionType,
+} from './config/index.ts'
 
-// const emit = defineEmits([
-//   // 选中组件的坐标值发生改变, rect.rect|rect.y
-//   // 可能的情况，选中组件移动过程中发生吸附其他组件或中轴线或边界线
-//   'update:rect',
-// ])
+const emit = defineEmits([
+  // 选中组件的坐标值发生改变, rect.rect|rect.y
+  // 可能的情况，选中组件移动过程中发生吸附其他组件或中轴线或边界线
+  // 标注线
+  'onMarkLineList',
+])
 
-const props = defineProps({
+const {
+  wdpRatio = DEFAULT_WDP_RATIO,
+  scaleFigure = DEFAULT_SCALE_FIGURE,
+  rect = DEFAULT_RECT,
+  thick = 24,
+  width = 0,
+  height = 0,
+  startX = 0,
+  startY = 0,
+  markLineList = [],
+} = defineProps({
   // 变量
   // Window.devicePixelRatio = {物理像素分辨率/CSS 像素分辨率}
-  wdpRatio: { type: Number, default: DEFAULT_WDP_RATIO },
+  wdpRatio: Number,
   // ------------------
-  scaleFigure: { type: Number, default: 1 },
+  scaleFigure: Number,
   // 传入阴影部分，选中画布组件，在标尺中标注组件位置
-  rect: {
-    type: Object as PropType<IFRect>,
-    default: () => ({
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-    }),
-  },
+  rect: Object as PropType<IFRect>,
   // 常量
-  thick: { type: Number, default: 24 },
-  width: { type: Number, required: true },
-  height: { type: Number, required: true },
-  startX: { type: Number, default: 0 },
-  startY: { type: Number, default: 0 },
-  markLineList: { type: Array, default: [] },
+  thick: Number,
+  width: Number,
+  height: Number,
+  startX: Number,
+  startY: Number,
+  markLineList: Array as PropType<IFLineListByProps[]>,
 })
 // --- wdpRatio ---
-const wdpRatioRef = ref(props.wdpRatio || DEFAULT_WDP_RATIO)
+const wdpRatioRef = computed(() => wdpRatio)
 provide(wdpRatioKey, wdpRatioRef)
-watch(
-  () => props.wdpRatio,
-  (_) => (wdpRatioRef.value = _),
-)
 // --- scale ---
-const scaleFigureRef = ref(props.scaleFigure || DEFAULT_SCALE_FIGURE)
+const scaleFigureRef = computed(() => scaleFigure)
 provide(scaleFigureKey, scaleFigureRef)
-watch(
-  () => props.scaleFigure,
-  (_) => (scaleFigureRef.value = _),
-)
 // ------ rect ----------
 const updateRect = () => console.log('updateRect')
 provide('updateRect', updateRect)
-const rectReactive = reactive(props.rect || DEFAULT_RECT)
+const rectReactive = computed(() => rect)
 provide(rectKey, rectReactive)
-watch(
-  () => props.rect,
-  (_) => Object.assign(rectReactive, _),
-)
 // ---- 标注线 ----------
-const lineList = reactive<IFLineList>(DEFAULT_LINELIST.lineList)
-type lineActionType = 'del' | 'add'
-type lineDirectionType = 'horizontal' | 'vertical'
-const updateLineList = (f: lineDirectionType, t: lineActionType, i: number) => {
-  console.log('-- updateLineList', f, t, i)
-  if (t === 'del' && f === 'horizontal') lineList.horizontal.splice(i, 1)
-  else if (t === 'del' && f === 'vertical') lineList.vertical.splice(i, 1)
-  else if (t === 'add' && f === 'horizontal') lineList.horizontal.push(i)
-  else if (t === 'add' && f === 'vertical') lineList.vertical.push(i)
+const lineList = computed(
+  () =>
+    markLineList.reduce((_: Partial<IFLineList>, o: IFLineListByProps) => {
+      if (!_['horizontal']) _['horizontal'] = []
+      if (!_['vertical']) _['vertical'] = []
+
+      if (o.type === 'horizontal') _['horizontal'].push(o.value)
+      else if (o.type === 'vertical') _['vertical'].push(o.value)
+
+      return _
+    }, {} as IFLineList) as IFLineList,
+)
+const updateLineList = (f: TLineDirectionType, t: TLineActionType, i: number) => {
+  emit('onMarkLineList', t, f, i)
 }
-provide(lineListKey, {
-  lineList,
-  updateLineList,
-})
+provide(lineListCbKey, updateLineList)
 // --------------
 const cornerStyle = computed<CSSProperties>(() => ({
   backgroundColor: DEFAULT_THEME.bgColor,
-  width: `${props.thick}px`,
-  height: `${props.thick}px`,
+  width: `${thick}px`,
+  height: `${thick}px`,
   borderRight: `1px solid ${DEFAULT_THEME.borderColor}`,
   borderBottom: `1px solid ${DEFAULT_THEME.borderColor}`,
 }))

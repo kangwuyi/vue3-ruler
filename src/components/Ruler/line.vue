@@ -20,17 +20,17 @@
 import { computed, defineProps, defineEmits, ref, onMounted, inject, type CSSProperties } from 'vue'
 import {
   DEFAULT_THEME,
-  lineListKey,
-  DEFAULT_LINELIST,
+  lineListCbKey,
   scaleFigureKey,
   DEFAULT_SCALE_FIGURE,
+  type TUpdateLineList,
 } from '../config/index.ts'
 
 // ----- scaleFigure --------
 const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
 // ---------------
 
-const { updateLineList } = inject(lineListKey, DEFAULT_LINELIST)
+const updateLineList = inject<TUpdateLineList>(lineListCbKey, () => {})
 
 const startValue = ref(0)
 onMounted(() => {
@@ -92,7 +92,7 @@ const handleDown = (e: MouseEvent) => {
 // ----------
 // 双击删除此线
 const handleDelLine = () =>
-  updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'del', props.index)
+  updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'del', props.value)
 </script>
 
 <style lang="less">

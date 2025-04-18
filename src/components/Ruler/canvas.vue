@@ -16,16 +16,15 @@
 import { defineProps, ref, watch, onMounted, defineEmits, inject, reactive } from 'vue'
 import { drawCanvaslRuler } from './utils.ts'
 import {
-  lineListKey,
-  DEFAULT_LINELIST,
   scaleFigureKey,
   DEFAULT_SCALE_FIGURE,
   wdpRatioKey,
   DEFAULT_WDP_RATIO,
   rectKey,
   DEFAULT_RECT,
+  lineListCbKey,
 } from '../config/index.ts'
-import type { IFDrawRulerOption } from '../config/index.ts'
+import type { IFDrawRulerOption, TUpdateLineList } from '../config/index.ts'
 
 // ---------------------------
 const emit = defineEmits([
@@ -50,7 +49,7 @@ watch(
   { deep: true },
 )
 // ----------
-const { updateLineList } = inject(lineListKey, DEFAULT_LINELIST)
+const updateLineList = inject<TUpdateLineList>(lineListCbKey, () => {})
 // --------
 
 const getValueByOffset = (offset: number, start: number, scale: number): number =>

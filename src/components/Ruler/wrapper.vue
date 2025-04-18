@@ -20,7 +20,7 @@
     />
     <div v-if="lineVisible" class="ruler-_-line-box">
       <LineRuler
-        v-for="(v, i) in curLineList"
+        v-for="(v, i) in markLineList"
         :key="'line' + v"
         :index="i"
         :start="start"
@@ -45,26 +45,15 @@ import {
   defineEmits,
   inject,
   ref,
-  watch,
-  onMounted,
-  type Reactive,
   type CSSProperties,
+  type PropType,
 } from 'vue'
 import lodash from 'lodash'
 import LineRuler from './line.vue'
 import CanvasRuler from './canvas.vue'
-import {
-  DEFAULT_THEME,
-  lineListKey,
-  DEFAULT_LINELIST,
-  scaleFigureKey,
-  DEFAULT_SCALE_FIGURE,
-} from '../config/index.ts'
-import type { IFLineList } from '../config/index.ts'
+import { DEFAULT_THEME, scaleFigureKey, DEFAULT_SCALE_FIGURE } from '../config/index.ts'
 
 // 线的数组
-const { lineList } = inject(lineListKey, DEFAULT_LINELIST)
-const curLineList = ref<number[]>([])
 // ----- scaleFigure --------
 const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
 // ---------------
@@ -78,15 +67,10 @@ const props = defineProps({
   rollback: { type: Number, required: true, defalut: 0 },
   start: { type: Number, required: true },
   lineVisible: { type: Boolean, required: true },
+  markLineList: Array as PropType<number[]>,
 })
 // --------------
 // ---------------
-// 初始化
-const refreshCurLineList = (_: Reactive<IFLineList>) =>
-  (curLineList.value = props.isVertical ? _.vertical : _.horizontal)
-onMounted(() => refreshCurLineList(lineList))
-watch(lineList, (_) => refreshCurLineList(_))
-// -------
 const isDraggingLine = ref(false)
 // --------
 const rwStyle = computed<CSSProperties>(() => {
@@ -137,8 +121,7 @@ const handleLineRelease = (value: number, index: number) => {
   if (offset < 0 || offset > maxOffset) {
     emit('onLineRemove', index)
   } else {
-    curLineList.value[index] = value
-    emit('onLineChange', curLineList.value, props.isVertical)
+    // emit('onLineChange', curLineList.value, props.isVertical)
   }
 }
 // 是否展示标注线的虚线

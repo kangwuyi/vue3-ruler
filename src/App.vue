@@ -12,6 +12,7 @@
         :startY="startY"
         :rect="rect"
         :markLineList="markLineList"
+        @onMarkLineList="handleMarkLineList"
       />
     </div>
   </div>
@@ -21,6 +22,7 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import Ruler from './components/ruler.vue'
+import type { TLineActionType, TLineDirectionType, IFLineListByProps } from './components/config'
 const scaleFigure = ref(1)
 const wdpRatio = ref(1)
 const thick = ref(24)
@@ -34,7 +36,32 @@ const rect = reactive({
   width: 200,
   height: 100,
 })
-const markLineList = ref([])
+const markLineList = ref<IFLineListByProps[]>([
+  {
+    type: 'horizontal',
+    value: 24,
+  },
+  {
+    type: 'vertical',
+    value: 45,
+  },
+  {
+    type: 'horizontal',
+    value: 243,
+  },
+])
+const handleMarkLineList = (f: TLineDirectionType, t: TLineActionType, v: number) => {
+  console.log('-- updateLineList', f, t, v)
+  const i: number = markLineList.value.findIndex((_) => _.type === f && _.value === v)
+  if (i === -1 && t === 'add')
+    markLineList.value.splice(markLineList.value.length, 1, {
+      type: f,
+      value: v,
+    })
+  else if (i !== -1 && t === 'add') return console.log('标注线已经存在')
+  else if (i !== -1 && t === 'del') markLineList.value.splice(i, 1)
+  else if (i === -1 && t === 'del') return console.log('标注线不存在')
+}
 </script>
 
 <style scoped lang="less">

@@ -1,4 +1,4 @@
-import { type InjectionKey, type Reactive, type Ref } from 'vue'
+import type { InjectionKey, Reactive, Ref, ComputedRef } from 'vue'
 // --------
 export const DEFAULT_THEME: any = {
   bgColor: '#171a24', // ruler bg color
@@ -18,13 +18,17 @@ export interface IFLineList {
   horizontal: number[]
   vertical: number[]
 }
+export type TLineActionType = 'del' | 'add'
+export type TLineDirectionType = 'horizontal' | 'vertical'
 
-export interface IFLineListProvide {
-  lineList: Reactive<IFLineList>
-  updateLineList: Function
+export interface IFLineListByProps {
+  type: TLineDirectionType
+  value: number
 }
 
-export const lineListKey: InjectionKey<IFLineListProvide> = Symbol('lineList')
+export type TUpdateLineList = (f: TLineDirectionType, t: TLineActionType, i: number) => void
+
+export const lineListCbKey: InjectionKey<TUpdateLineList> = Symbol('lineListCb')
 
 export const DEFAULT_LINELIST = {
   lineList: {
@@ -54,7 +58,7 @@ export const DEFAULT_RECT = {
   width: 0,
   height: 0,
 }
-export const rectKey: InjectionKey<Reactive<IFRect>> = Symbol('rect')
+export const rectKey: InjectionKey<ComputedRef<IFRect>> = Symbol('rect')
 // ---- Ratio -------
 export const DEFAULT_WDP_RATIO = window.devicePixelRatio || 1
 export const wdpRatioKey = Symbol('wdpRatio') as InjectionKey<Ref<number>>
