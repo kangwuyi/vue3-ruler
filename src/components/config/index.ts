@@ -18,15 +18,22 @@ export interface IFLineList {
   horizontal: number[]
   vertical: number[]
 }
-export type TLineActionType = 'del' | 'add' | 'update'
-export type TLineDirectionType = 'horizontal' | 'vertical'
+export enum ELineActionType {
+  DEL = 'del',
+  ADD = 'add',
+  UPDATE = 'update',
+}
+export enum ELineDirectionType {
+  HORIZONTAL = 'horizontal',
+  VERTICAL = 'vertical',
+}
 
 export interface IFLineListByProps {
-  type: TLineDirectionType
+  type: ELineDirectionType
   value: number
 }
 
-export type TUpdateLineList = (f: TLineDirectionType, t: TLineActionType, i: number) => void
+export type TUpdateLineList = (f: ELineDirectionType, t: ELineActionType, i: number) => void
 
 export const lineListCbKey: InjectionKey<TUpdateLineList> = Symbol('lineListCb')
 

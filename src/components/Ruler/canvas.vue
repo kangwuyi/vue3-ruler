@@ -23,6 +23,8 @@ import {
   rectKey,
   DEFAULT_RECT,
   lineListCbKey,
+  ELineActionType,
+  ELineDirectionType,
 } from '../config/index.ts'
 import type { IFDrawRulerOption, TUpdateLineList } from '../config/index.ts'
 
@@ -128,7 +130,11 @@ const drawRuler = () => {
 const handleClick = (e: MouseEvent) => {
   const offset = props.isVertical ? e.offsetY : e.offsetX
   const value = getValueByOffset(offset, props.start, scaleFigure.value) // 获取标尺数值
-  updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'add', value)
+  updateLineList(
+    props.isVertical ? ELineDirectionType.VERTICAL : ELineDirectionType.HORIZONTAL,
+    ELineActionType.ADD,
+    value,
+  )
 }
 const handleEnter = (e: MouseEvent) => {
   const offset = props.isVertical ? e.offsetY : e.offsetX

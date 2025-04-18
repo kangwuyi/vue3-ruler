@@ -24,6 +24,8 @@ import {
   scaleFigureKey,
   DEFAULT_SCALE_FIGURE,
   type TUpdateLineList,
+  ELineActionType,
+  ELineDirectionType,
 } from '../config/index.ts'
 
 // ----- scaleFigure --------
@@ -87,7 +89,11 @@ const handleDown = (e: MouseEvent) => {
 // ----------
 // 双击删除此线
 const handleDelLine = () =>
-  updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'del', props.value)
+  updateLineList(
+    props.isVertical ? ELineDirectionType.VERTICAL : ELineDirectionType.HORIZONTAL,
+    ELineActionType.DEL,
+    props.value,
+  )
 </script>
 
 <style lang="less">

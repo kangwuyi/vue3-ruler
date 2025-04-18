@@ -57,7 +57,9 @@ import {
   scaleFigureKey,
   DEFAULT_SCALE_FIGURE,
   type TUpdateLineList,
+  ELineActionType,
   lineListCbKey,
+  ELineDirectionType,
 } from '../config/index.ts'
 
 const updateLineList = inject<TUpdateLineList>(lineListCbKey, () => {})
@@ -128,10 +130,13 @@ const handleLineRelease = (value: number) => {
   // 左右或上下超出时, 删除该条对齐线
   const offset = value - props.start
   const maxOffset = (props.isVertical ? props.height : props.width) / scaleFigure.value
+  const nextDirection = props.isVertical
+    ? ELineDirectionType.VERTICAL
+    : ELineDirectionType.HORIZONTAL
   if (offset < 0 || offset > maxOffset) {
-    updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'del', value)
+    updateLineList(nextDirection, ELineActionType.DEL, value)
   } else {
-    updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'update', value)
+    updateLineList(nextDirection, ELineActionType.UPDATE, value)
   }
 }
 // 是否展示标注线的虚线

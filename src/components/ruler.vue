@@ -60,8 +60,8 @@ import type {
   IFLineListByProps,
   IFLineList,
   IFRect,
-  TLineActionType,
-  TLineDirectionType,
+  ELineActionType,
+  ELineDirectionType,
 } from './config/index.ts'
 
 const emit = defineEmits([
@@ -121,7 +121,7 @@ const lineList = computed(
       return _
     }, {} as IFLineList) as IFLineList,
 )
-const updateLineList = (f: TLineDirectionType, t: TLineActionType, i: number) => {
+const updateLineList = (f: ELineDirectionType, t: ELineActionType, i: number) => {
   emit('onMarkLineList', t, f, i)
 }
 provide(lineListCbKey, updateLineList)
