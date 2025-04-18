@@ -23,11 +23,13 @@
     class=""
     :class="{
       'ruler-_-corner': true,
-      'ruler-_-corner-active': cornerActive,
     }"
     :style="cornerStyle"
     @click="handleLineVisibleChange"
-  ></span>
+  >
+    <IconEye v-if="lineVisible" class="ruler-_-corner-icon" />
+    <IconEyeX v-else class="ruler-_-corner-icon" />
+  </span>
 </template>
 
 <script lang="ts" setup>
@@ -42,6 +44,7 @@ import {
   type CSSProperties,
   watch,
 } from 'vue'
+import { IconEye, IconEyeX } from '@tabler/icons-vue'
 import RulerWrapper from './Ruler/wrapper.vue'
 import {
   DEFAULT_THEME,
@@ -79,12 +82,11 @@ const props = defineProps({
     }),
   },
   // 常量
-  thick: { type: Number, default: 16 },
+  thick: { type: Number, default: 24 },
   width: { type: Number, required: true },
   height: { type: Number, required: true },
   startX: { type: Number, default: 0 },
   startY: { type: Number, default: 0 },
-  cornerActive: { type: Boolean, default: false },
 })
 // --- wdpRatio ---
 const wdpRatioRef = ref(props.wdpRatio || DEFAULT_WDP_RATIO)
@@ -143,12 +145,18 @@ const handleLineVisibleChange = () => (lineVisible.value = !lineVisible.value)
   position: absolute;
   left: 0;
   top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: auto;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   box-sizing: content-box;
-  &-active {
-    background-color: white !important;
+  background-color: #171a24 !important;
+  &-icon {
+    width: 16px;
+    height: 16px;
+    color: #ffffff4d;
   }
 }
 </style>

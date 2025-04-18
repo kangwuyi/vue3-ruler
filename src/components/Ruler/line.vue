@@ -60,7 +60,7 @@ const sizeStyle = computed<CSSProperties>(() => ({
   [props.isVertical ? 'width' : 'height']: `${props.rollback + props.thick}px`,
 }))
 const actionStyle = computed(() => ({
-  [props.isVertical ? 'left' : 'top']: `${props.thick - (props.isVertical ? 21 : 15)}px`,
+  [props.isVertical ? 'left' : 'top']: `${props.thick - (props.isVertical ? 22 : 22)}px`,
 }))
 // ------------
 const handleDown = (e: MouseEvent) => {
@@ -126,13 +126,14 @@ const handleDelLine = () =>
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 10px;
   }
 
   .value {
-    transform: scale(0.6);
+    // transform: scale(0.6);
     border-radius: 2px;
-    color: white;
-    background: black;
+    color: #e06a6a;
+    background: transparent;
     padding: 0 2px;
   }
 }

@@ -5,7 +5,6 @@
       'ruler-_-wrapper-v': isVertical,
       'ruler-_-wrapper-h': !isVertical,
     }"
-    @touchmove.prevent
     :style="rwStyle"
   >
     <CanvasRuler
@@ -17,6 +16,7 @@
       @onIndicatorMove="handleIndicatorMove"
       @onIndicatorShow="handleIndicatorShow"
       @onIndicatorHide="handleIndicatorHide"
+      @onVisibleDotted="handleVisibleDotted"
     />
     <div v-if="lineVisible" class="ruler-_-line-box">
       <LineRuler
@@ -32,7 +32,7 @@
         @onRelease="handleLineRelease"
       />
     </div>
-    <div class="indicator" :style="indicatorStyle" v-show="lineVisible">
+    <div v-if="visibleDotted" class="indicator" :style="indicatorStyle" v-show="lineVisible">
       <div class="value">{{ tmpValue }}</div>
     </div>
   </div>
@@ -141,6 +141,9 @@ const handleLineRelease = (value: number, index: number) => {
     emit('onLineChange', curLineList.value, props.isVertical)
   }
 }
+// 是否展示标注线的虚线
+const visibleDotted = ref(false)
+const handleVisibleDotted = (_: boolean) => (visibleDotted.value = _)
 </script>
 
 <style lang="less">

@@ -8,6 +8,7 @@
     @click="handleClick"
     @mouseenter="handleEnter"
     @mousemove="handleMove"
+    @mouseleave="handleLeave"
   ></canvas>
 </template>
 
@@ -26,6 +27,13 @@ import {
 } from '../config/index.ts'
 import type { IFDrawRulerOption } from '../config/index.ts'
 
+// ---------------------------
+const emit = defineEmits([
+  'onIndicatorShow',
+  'onIndicatorMove',
+  'onIndicatorHide',
+  'onVisibleDotted',
+])
 // ----- wdpRatio --------
 const wdpRatio = inject(wdpRatioKey, ref(DEFAULT_WDP_RATIO))
 watch(wdpRatio, (_) => console.log('inject wdpRatio', _), { deep: true })
@@ -44,7 +52,6 @@ watch(
 // ----------
 const { updateLineList } = inject(lineListKey, DEFAULT_LINELIST)
 // --------
-const emit = defineEmits(['onIndicatorShow', 'onIndicatorMove', 'onIndicatorHide'])
 
 const getValueByOffset = (offset: number, start: number, scale: number): number =>
   Math.round(start + offset / scale)
@@ -86,10 +93,7 @@ const updateCanvasContext = () => {
   canvasRef.value.width = props.width * wdpRatio.value
   canvasRef.value.height = props.height * wdpRatio.value
   const ctx = canvasRef.value.getContext('2d')!
-  ctx.font = `${12 * wdpRatio.value}px -apple-system,
-              "Helvetica Neue", ".SFNSText-Regular",
-              "SF UI Text", Arial, "PingFang SC", "Hiragino Sans GB",
-              "Microsoft YaHei", "WenQuanYi Zen Hei", sans-serif`
+  ctx.font = `normal ${12 * wdpRatio.value}px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
   ctx.lineWidth = 1
   ctx.textBaseline = 'middle'
   //
@@ -127,6 +131,7 @@ const handleEnter = (e: MouseEvent) => {
   const offset = props.isVertical ? e.offsetY : e.offsetX
   const value = getValueByOffset(offset, props.start, scaleFigure.value)
   emit('onIndicatorShow', value)
+  emit('onVisibleDotted', true)
 }
 
 const handleMove = (e: MouseEvent) => {
@@ -134,6 +139,7 @@ const handleMove = (e: MouseEvent) => {
   const value = getValueByOffset(offset, props.start, scaleFigure.value)
   emit('onIndicatorMove', value)
 }
+const handleLeave = () => emit('onVisibleDotted', false)
 </script>
 
 <style lang="less">
