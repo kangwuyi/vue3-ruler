@@ -13,9 +13,9 @@
       :width="width"
       :height="height"
       :start="start"
-      @onIndicatorMove="handleIndicatorMove"
-      @onIndicatorShow="handleIndicatorShow"
-      @onIndicatorHide="handleIndicatorHide"
+      @onLineMove="handleLineMove"
+      @onLineVisible="handleLineVisible"
+      @onLineDisable="handleLineDisable"
       @onVisibleDotted="handleVisibleDotted"
     />
     <div v-if="lineVisible" class="ruler-_-line-box">
@@ -28,9 +28,9 @@
         :rollback="rollback"
         :thick="thick"
         :value="v >> 0"
-        @onMouseDown="handleLineDown"
-        @onRelease="handleLineRelease"
-        @onVisibleDotted="handleVisibleDotted"
+        @onIsMovingEnd="handleIsMovingEnd"
+        @onIsMovingStart="handleIsMovingStart"
+        @onUpdateLine="handleUpdateLine"
       />
     </div>
     <div v-if="visibleDotted" class="indicator" :style="indicatorStyle" v-show="lineVisible">
@@ -104,29 +104,21 @@ const indicatorStyle = computed<CSSProperties>(() => ({
 }))
 
 // 栅格线展示
-const handleIndicatorShow = (value: number) => {
+const handleLineVisible = (value: number) => {
   if (!isMovingLine.value) {
     tmpValue.value = value
   }
 }
 
 // 栅格线跟随鼠标移动
-const handleIndicatorMove = lodash.debounce((value: number) => {
+const handleLineMove = lodash.debounce((value: number) => {
   console.log('move')
   tmpValue.value = value
 }, 1)
 // 栅格线隐藏
-const handleIndicatorHide = () => emit('update:lineVisible', false)
+const handleLineDisable = () => emit('update:lineVisible', false)
 
-const handleLineDown = () => {
-  // 点击标注线时，关闭虚线
-  handleIsMovingLine(true)
-  handleVisibleDotted(false)
-}
-
-const handleLineRelease = (value: number) => {
-  // -----------------------------
-  handleIsMovingLine(false)
+const handleUpdateLine = (value: number) => {
   // 左右或上下超出时, 删除该条对齐线
   const offset = value - props.start
   const maxOffset = (props.isVertical ? props.height : props.width) / scaleFigure.value
@@ -145,6 +137,17 @@ const handleVisibleDotted = (_: boolean) => (visibleDotted.value = _)
 // 是否是移动标注线
 const isMovingLine = ref(false)
 const handleIsMovingLine = (_: boolean) => (isMovingLine.value = _)
+// ---------------
+const handleIsMovingStart = () => {
+  console.log('handleIsMovingStart')
+  // 点击标注线时，关闭虚线
+  handleIsMovingLine(true)
+  handleVisibleDotted(false)
+}
+const handleIsMovingEnd = () => {
+  console.log('handleIsMovingEnd')
+  handleIsMovingLine(false)
+}
 </script>
 
 <style lang="less">

@@ -5,19 +5,28 @@
       'ruler-_-line-v': isVertical,
       'ruler-_-line-h': !isVertical,
     }"
-    :style="[offset, borderCursor, sizeStyle]"
+    :style="lineStyle"
     @dblclick.stop.prevent="handleDelLine"
-    @mousedown.stop.prevent="handleDown"
-    :tabindex="index"
+    @mousedown.stop.prevent="handleMouseDown"
+    :tabindex="value"
   >
     <div class="action" :style="actionStyle">
-      <span class="value">{{ startValue }}</span>
+      <span class="value">{{ cache }}</span>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, defineEmits, ref, onMounted, inject, type CSSProperties } from 'vue'
+import {
+  watch,
+  computed,
+  defineProps,
+  defineEmits,
+  ref,
+  onMounted,
+  inject,
+  type CSSProperties,
+} from 'vue'
 import {
   DEFAULT_THEME,
   lineListCbKey,
@@ -28,21 +37,13 @@ import {
   ELineDirectionType,
 } from '../config/index.ts'
 
-// ----- scaleFigure --------
+// ----- inject --------
 const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
-// ---------------
-
 const updateLineList = inject<TUpdateLineList>(lineListCbKey, () => {})
 
-const startValue = ref(0)
-onMounted(() => {
-  startValue.value = props.value
-})
-
-const emit = defineEmits(['onMouseDown', 'onRelease'])
-
-const props = defineProps({
-  index: { type: Number, required: true },
+//------------
+const emit = defineEmits(['onIsMovingStart', 'onIsMovingEnd', 'onUpdateLine'])
+const { start, isVertical, rollback, value, thick } = defineProps({
   start: { type: Number, required: true },
   isVertical: { type: Boolean, required: true },
   rollback: { type: Number, required: true },
@@ -50,34 +51,34 @@ const props = defineProps({
   thick: { type: Number, required: true },
 })
 
-const offset = computed<CSSProperties>(() => ({
-  [props.isVertical ? 'top' : 'left']: `${(startValue.value - props.start) * scaleFigure.value}px`,
-}))
-const borderCursor = computed<CSSProperties>(() => ({
-  [props.isVertical ? 'borderTop' : 'borderLeft']: `1px solid ${DEFAULT_THEME.lineColor}`,
+const cache = ref<number>(value)
+
+const lineStyle = computed<CSSProperties>(() => ({
+  [isVertical ? 'top' : 'left']: `${(cache.value - start) * scaleFigure.value}px`,
+  [isVertical ? 'borderTop' : 'borderLeft']: `1px solid ${DEFAULT_THEME.lineColor}`,
   // ns↕️ ew↔️
-  cursor: props.isVertical ? 'ns-resize' : 'ew-resize',
+  cursor: isVertical ? 'ns-resize' : 'ew-resize',
+  [isVertical ? 'width' : 'height']: `${rollback + thick}px`,
 }))
-const sizeStyle = computed<CSSProperties>(() => ({
-  [props.isVertical ? 'width' : 'height']: `${props.rollback + props.thick}px`,
-}))
+
 const actionStyle = computed(() => ({
-  [props.isVertical ? 'left' : 'top']: `${props.thick - (props.isVertical ? 22 : 22)}px`,
+  [isVertical ? 'left' : 'top']: `${thick - (isVertical ? 22 : 22)}px`,
 }))
 // ------------
-const handleDown = (e: MouseEvent) => {
-  const startD = props.isVertical ? e.clientY : e.clientX
-  const initValue = startValue.value
-  emit('onMouseDown')
+const handleMouseDown = (e: MouseEvent) => {
+  emit('onIsMovingStart')
+  const startD = isVertical ? e.clientY : e.clientX
+  const initValue = cache.value
   // 使用防抖函数
   const onMove = (e: MouseEvent) => {
     console.log('move')
-    const currentD = props.isVertical ? e.clientY : e.clientX
+    const currentD = isVertical ? e.clientY : e.clientX
     const newValue = Math.round(initValue + (currentD - startD) / scaleFigure.value)
-    startValue.value = newValue
+    cache.value = newValue
   }
   const onEnd = () => {
-    emit('onRelease', startValue.value, props.index)
+    emit('onIsMovingEnd')
+    emit('onUpdateLine', cache.value)
 
     document.removeEventListener('mousemove', onMove)
     document.removeEventListener('mouseup', onEnd)
@@ -85,14 +86,13 @@ const handleDown = (e: MouseEvent) => {
   document.addEventListener('mousemove', onMove)
   document.addEventListener('mouseup', onEnd)
 }
-
 // ----------
 // 双击删除此线
 const handleDelLine = () =>
   updateLineList(
-    props.isVertical ? ELineDirectionType.VERTICAL : ELineDirectionType.HORIZONTAL,
+    isVertical ? ELineDirectionType.VERTICAL : ELineDirectionType.HORIZONTAL,
     ELineActionType.DEL,
-    props.value,
+    value,
   )
 </script>
 
