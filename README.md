@@ -47,25 +47,6 @@ app.mount('#app')
 <imp-sketch-ruler name="circle" color="red" />
 ```
 
-## Props
+## 参数配置等
 
-| Name | Type | Default | Description |
-|:-----|:-----|:--------|:------------|
-| name | string | 'three-bounce' | specify spinner to use (defaults to line-scale-pulse-out-rapid). |
-| color | string |  | programmatically set the color of the spinners; this can either be a hex value or a color word. |
-| noFadeIn | boolean | false | set use fade in |
-| fadeIn | string | 'full' | set the time before the spinner fades in. Have 'full', 'half' and 'quarter' |
-| className | string | | add a custom classname to the outer div |
-| width | string | | set width of spinner |
-| height | string | | set heght of spinner |
-
-
-<!-- # 发包过程
-```
-npm run tsc
-api-extractor run
-npm run bundle
-npm publish
-```
-
-构建过程需要注意 `[pageage.json].typings` 与构建输出结果中的文件保持一致 -->
+详见 vue3-ruler/src/App.vue 文件
