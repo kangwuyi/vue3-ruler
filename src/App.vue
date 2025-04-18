@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import Ruler from './components/ruler.vue'
 import { type IFLineListByProps, ELineActionType, ELineDirectionType } from './components/config'
 const scaleFigure = ref(1)
@@ -50,9 +50,17 @@ const markLineList = ref<IFLineListByProps[]>([
     value: 243,
   },
 ])
+watch(
+  markLineList,
+  (_) => {
+    console.log('----------------markLineList', _)
+  },
+  { deep: true },
+)
 const handleMarkLineList = (f: ELineDirectionType, t: ELineActionType, v: number) => {
   console.log('-- updateLineList', f, t, v)
   const i: number = markLineList.value.findIndex((_) => _.type === f && _.value === v)
+  console.log('i', i, t, ELineActionType.ADD, t === ELineActionType.ADD)
   if (i === -1 && t === ELineActionType.ADD)
     markLineList.value.splice(markLineList.value.length, 1, {
       type: f,

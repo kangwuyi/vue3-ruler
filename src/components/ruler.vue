@@ -122,7 +122,7 @@ const lineList = computed(
     }, {} as IFLineList) as IFLineList,
 )
 const updateLineList = (f: ELineDirectionType, t: ELineActionType, i: number) => {
-  emit('onMarkLineList', t, f, i)
+  emit('onMarkLineList', f, t, i)
 }
 provide(lineListCbKey, updateLineList)
 // --------------
