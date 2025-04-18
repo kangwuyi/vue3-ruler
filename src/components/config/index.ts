@@ -18,7 +18,7 @@ export interface IFLineList {
   horizontal: number[]
   vertical: number[]
 }
-export type TLineActionType = 'del' | 'add'
+export type TLineActionType = 'del' | 'add' | 'update'
 export type TLineDirectionType = 'horizontal' | 'vertical'
 
 export interface IFLineListByProps {

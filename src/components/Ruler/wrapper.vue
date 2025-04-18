@@ -30,6 +30,7 @@
         :value="v >> 0"
         @onMouseDown="handleLineDown"
         @onRelease="handleLineRelease"
+        @onVisibleDotted="handleVisibleDotted"
       />
     </div>
     <div v-if="visibleDotted" class="indicator" :style="indicatorStyle" v-show="lineVisible">
@@ -51,13 +52,20 @@ import {
 import lodash from 'lodash'
 import LineRuler from './line.vue'
 import CanvasRuler from './canvas.vue'
-import { DEFAULT_THEME, scaleFigureKey, DEFAULT_SCALE_FIGURE } from '../config/index.ts'
+import {
+  DEFAULT_THEME,
+  scaleFigureKey,
+  DEFAULT_SCALE_FIGURE,
+  type TUpdateLineList,
+  lineListCbKey,
+} from '../config/index.ts'
 
+const updateLineList = inject<TUpdateLineList>(lineListCbKey, () => {})
 // 线的数组
 // ----- scaleFigure --------
 const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
 // ---------------
-const emit = defineEmits(['update:lineVisible', 'onLineChange', 'onLineRemove'])
+const emit = defineEmits(['update:lineVisible'])
 const props = defineProps({
   isVertical: { type: Boolean, required: true },
   width: { type: Number, required: true },
@@ -71,7 +79,6 @@ const props = defineProps({
 })
 // --------------
 // ---------------
-const isDraggingLine = ref(false)
 // --------
 const rwStyle = computed<CSSProperties>(() => {
   const hContainer = {
@@ -96,7 +103,7 @@ const indicatorStyle = computed<CSSProperties>(() => ({
 
 // 栅格线展示
 const handleIndicatorShow = (value: number) => {
-  if (!isDraggingLine.value) {
+  if (!isMovingLine.value) {
     tmpValue.value = value
   }
 }
@@ -110,23 +117,29 @@ const handleIndicatorMove = lodash.debounce((value: number) => {
 const handleIndicatorHide = () => emit('update:lineVisible', false)
 
 const handleLineDown = () => {
-  isDraggingLine.value = true
+  // 点击标注线时，关闭虚线
+  handleIsMovingLine(true)
+  handleVisibleDotted(false)
 }
 
-const handleLineRelease = (value: number, index: number) => {
-  isDraggingLine.value = false
+const handleLineRelease = (value: number) => {
+  // -----------------------------
+  handleIsMovingLine(false)
   // 左右或上下超出时, 删除该条对齐线
   const offset = value - props.start
   const maxOffset = (props.isVertical ? props.height : props.width) / scaleFigure.value
   if (offset < 0 || offset > maxOffset) {
-    emit('onLineRemove', index)
+    updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'del', value)
   } else {
-    // emit('onLineChange', curLineList.value, props.isVertical)
+    updateLineList(props.isVertical ? 'vertical' : 'horizontal', 'update', value)
   }
 }
 // 是否展示标注线的虚线
 const visibleDotted = ref(false)
 const handleVisibleDotted = (_: boolean) => (visibleDotted.value = _)
+// 是否是移动标注线
+const isMovingLine = ref(false)
+const handleIsMovingLine = (_: boolean) => (isMovingLine.value = _)
 </script>
 
 <style lang="less">

@@ -61,6 +61,11 @@ const handleMarkLineList = (f: TLineDirectionType, t: TLineActionType, v: number
   else if (i !== -1 && t === 'add') return console.log('标注线已经存在')
   else if (i !== -1 && t === 'del') markLineList.value.splice(i, 1)
   else if (i === -1 && t === 'del') return console.log('标注线不存在')
+  else if (i !== -1 && t === 'update')
+    markLineList.value.splice(i, 1, {
+      type: f,
+      value: v,
+    })
 }
 </script>
 

@@ -67,9 +67,6 @@ const handleDown = (e: MouseEvent) => {
   const startD = props.isVertical ? e.clientY : e.clientX
   const initValue = startValue.value
   emit('onMouseDown')
-  // 锁定框选工具
-  // props.$bus.$emit('selectFrameLock', true);
-
   // 使用防抖函数
   const onMove = (e: MouseEvent) => {
     console.log('move')
@@ -78,8 +75,6 @@ const handleDown = (e: MouseEvent) => {
     startValue.value = newValue
   }
   const onEnd = () => {
-    // 解锁框选工具
-    // props.$bus.$emit('selectFrameLock', false);
     emit('onRelease', startValue.value, props.index)
 
     document.removeEventListener('mousemove', onMove)

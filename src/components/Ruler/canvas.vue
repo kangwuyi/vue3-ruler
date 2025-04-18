@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, watch, onMounted, defineEmits, inject, reactive } from 'vue'
+import { defineProps, ref, watch, onMounted, defineEmits, inject, reactive, computed } from 'vue'
 import { drawCanvaslRuler } from './utils.ts'
 import {
   scaleFigureKey,
@@ -39,7 +39,10 @@ watch(wdpRatio, (_) => console.log('inject wdpRatio', _), { deep: true })
 // ----- scaleFigure --------
 const scaleFigure = inject(scaleFigureKey, ref(DEFAULT_SCALE_FIGURE))
 // ---------- rect ---------
-const rect = inject(rectKey, reactive(DEFAULT_RECT))
+const rect = inject(
+  rectKey,
+  computed(() => DEFAULT_RECT),
+)
 watch(
   [rect, scaleFigure],
   ([_rect, _scaleFigure]) => {
@@ -93,8 +96,7 @@ const updateCanvasContext = () => {
   canvasRef.value.width = props.width * wdpRatio.value
   canvasRef.value.height = props.height * wdpRatio.value
   const ctx = canvasRef.value.getContext('2d')!
-  ctx.font = `normal ${12 * wdpRatio.value}px   'PingFang SC',
-    'Microsoft YaHei', monospace, sans-serif`
+  ctx.font = `normal ${12 * wdpRatio.value}px   'PingFang SC', 'Microsoft YaHei', monospace, sans-serif`
   ctx.lineWidth = 1
   ctx.textBaseline = 'middle'
   //
@@ -115,10 +117,10 @@ const drawRuler = () => {
     canvasContext.value,
     props.start,
     {
-      x: props.isVertical ? 0 : rect.x,
-      width: props.isVertical ? 0 : rect.width,
-      y: props.isVertical ? rect.y : 0,
-      height: props.isVertical ? rect.height : 0,
+      x: props.isVertical ? 0 : rect.value.x,
+      width: props.isVertical ? 0 : rect.value.width,
+      y: props.isVertical ? rect.value.y : 0,
+      height: props.isVertical ? rect.value.height : 0,
     },
     options,
   )
