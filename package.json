@@ -1,6 +1,6 @@
 {
   "name": "@kangwuyi/vue3-sketch-ruler",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "homepage": "http://vue3-sketch-ruler.surge.sh/",
   "description": "A sketch ruler for VueJS 3",
@@ -16,9 +16,16 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "main": "bundle/vue3-sketch-ruler.umd.cjs",
-  "module": "bundle/vue3-sketch-ruler.js",
-  "types": "bundle/components/index.d.ts",
+  "main": "./bundle/index.cjs.js",
+  "module": "./bundle/index.es.js",
+  "exports": {
+    ".": {
+      "types": "./bundle/index.d.ts",
+      "import": "./bundle/index.es.js",
+      "require": "./bundle/index.cjs.js"
+    }
+  },
+  "types": "./bundle/index.d.ts",
   "files": [
     "bundle",
     "index.d.ts"
@@ -72,6 +79,7 @@
     "typescript-eslint": "^8.27.0",
     "unplugin-vue-define-options": "^3.0.0-beta.6",
     "vite": "^6.2.2",
+    "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-dts": "^4.5.3",
     "vitest": "^3.0.9",
     "vue": "^3.5.13",

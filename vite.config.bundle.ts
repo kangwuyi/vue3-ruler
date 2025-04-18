@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+// import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dts from 'vite-plugin-dts'
 // 组件命名插件
 import DefineOptions from 'unplugin-vue-define-options/vite'
@@ -13,7 +14,7 @@ export default defineConfig({
     DefineOptions(),
     dts({
       // 将所有声明合并到一个文件
-      rollupTypes: false,
+      rollupTypes: true,
       // 指定 tsconfigPath
       tsconfigPath: './tsconfig.bundle.json',
       // 基于 package.json 的 `types` 字段生成，或者 `${outDir}/index.d.ts`
@@ -51,9 +52,12 @@ export default defineConfig({
     // 库模式打包
     lib: {
       entry: resolve(__dirname, '/src/components/index.ts'),
-      name: 'vue3-sketch-ruler',
-      fileName: 'vue3-sketch-ruler',
-      formats: ['es', 'umd'],
+      name: 'vue3-ruler',
+      fileName: (format) => `index.${format}.js`,
+      formats: ['es', 'cjs'],
     },
+  },
+  esbuild: {
+    drop: ['console', 'debugger'],
   },
 })
